@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KEYVN — Danh mục sản phẩm & Hệ thống bán Key tự động 24/7</title>
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        kv: {
+                            bg: '#070d14',
+                            card: '#0d1623',
+                            card2: '#101d2e',
+                            border: '#1c2e42',
+                            cyan: '#1ea7fd',
+                            cyanDark: '#0b8de0',
+                            text: '#f0f6fc',
+                            muted: '#8b9bb4',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #070d14; }
+        ::-webkit-scrollbar-thumb { background: #1c2e42; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1ea7fd; }
+
+        .kv-pill-active {
+            border-color: #1ea7fd !important;
+            box-shadow: 0 0 18px rgba(30, 167, 253, 0.25), inset 0 0 12px rgba(30, 167, 253, 0.12);
+        }
+
+        .kv-bottom-glass {
+            background: linear-gradient(180deg, rgba(28, 38, 50, 0.85) 0%, rgba(13, 22, 35, 0.95) 100%);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 14px 38px rgba(0, 0, 0, 0.72);
+        }
+        html:not(.dark) .kv-bottom-glass {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(30, 167, 253, 0.3);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marquee 24s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 dark:bg-kv-bg dark:text-kv-text font-sans antialiased selection:bg-kv-cyan selection:text-slate-950 min-h-screen pb-28 transition-colors duration-300">
+
+    <!-- ==========================================
+         1. TOP STICKY PILL HEADER (Chuẩn hình ảnh KEYVN)
+    =========================================== -->
+    <header class="sticky top-0 z-40 px-3 sm:px-6 pt-3 pb-2 bg-slate-100/85 dark:bg-kv-bg/85 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto bg-white dark:bg-[#0b131e] border border-slate-200 dark:border-kv-border rounded-full px-3.5 sm:px-5 h-14 flex items-center justify-between shadow-lg shadow-black/10 dark:shadow-black/50">
+            
+            <!-- Left: Logo KEYVN -->
+            <button onclick="navigateTo('products')" class="flex items-center gap-2.5 group focus:outline-none">
+                <div class="w-9 h-9 rounded-full border border-kv-cyan/40 bg-kv-cyan/10 flex items-center justify-center group-hover:border-kv-cyan transition-colors">
+                    <div class="w-5 h-5 rounded-md border-[1.8px] border-kv-cyan flex items-center justify-center text-kv-cyan">
+                        <i data-lucide="check" class="w-3.5 h-3.5 stroke-[2.8]"></i>
+                    </div>
+                </div>
+                <span id="header-brand-logo" class="font-extrabold text-lg tracking-tight text-slate-900 dark:text-white">
+                    KEY<span class="text-kv-cyan">VN</span>
+                </span>
+            </button>
+
+            <!-- Right Cluster: Theme, Cart, Avatar NA, Hamburger -->
+            <div class="flex items-center gap-2">
+                <!-- Nút đổi chế độ Sáng/Tối -->
+                <button id="theme-toggle-btn" aria-label="Đổi giao diện Sáng/Tối" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#131e2e] border border-slate-200 dark:border-kv-border flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-kv-cyan hover:text-kv-cyan transition-all">
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+                </button>
+
+                <!-- Nút Giỏ hàng -->
+                <button onclick="openCartModal()" aria-label="Giỏ hàng" class="relative w-9 h-9 rounded-full bg-slate-100 dark:bg-[#131e2e] border border-slate-200 dark:border-kv-border flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-kv-cyan hover:text-kv-cyan transition-all">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    <span id="header-cart-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-kv-cyan text-slate-950 font-bold text-[10px] flex items-center justify-center shadow">0</span>
+                </button>
+
+                <!-- Avatar tròn chữ viết tắt (NA / Khách) -->
+                <button onclick="handleAvatarClick()" aria-label="Hồ sơ cá nhân" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#131e2e] border border-kv-cyan/60 p-0.5 flex items-center justify-center hover:scale-105 transition-transform">
+                    <div id="header-avatar-initials" class="w-full h-full rounded-full border border-kv-cyan/40 flex items-center justify-center text-[11px] font-bold text-kv-cyan">
+                        NA
+                    </div>
+                </button>
+
+                <!-- Nút Hamburger mở Drawer Menu -->
+                <button onclick="openDrawer()" aria-label="Mở menu" class="w-9 h-9 rounded-full hover:bg-slate-100 dark:hover:bg-[#131e2e] flex items-center justify-center text-slate-700 dark:text-slate-200 transition-colors">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         2. DRAWER MENU TRƯỢT TỪ BÊN PHẢI (Chuẩn hình ảnh)
+    =========================================== -->
+    <div id="drawer-backdrop" onclick="closeDrawer()" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs hidden opacity-0 transition-opacity duration-300"></div>
+    <aside id="right-drawer" class="fixed top-0 right-0 z-50 h-full w-[85%] max-w-[340px] bg-white dark:bg-[#09101a] border-l border-slate-200 dark:border-kv-border flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out shadow-2xl">
+        
+        <div class="overflow-y-auto flex-1">
+            <!-- Header Drawer -->
+            <div class="px-5 h-16 flex items-center justify-between border-b border-slate-200 dark:border-kv-border/70">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-full border border-kv-cyan/40 bg-kv-cyan/10 flex items-center justify-center">
+                        <div class="w-4 h-4 rounded border-[1.8px] border-kv-cyan flex items-center justify-center text-kv-cyan">
+                            <i data-lucide="check" class="w-3 h-3 stroke-[2.8]"></i>
+                        </div>
+                    </div>
+                    <span id="drawer-brand-logo" class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white">
+                        KEY<span class="text-kv-cyan">VN</span>
+                    </span>
+                </div>
+                <button onclick="closeDrawer()" aria-label="Đóng menu" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#131d2b] border border-slate-200 dark:border-kv-border flex items-center justify-center text-slate-500 dark:text-slate-300 hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Danh sách điều hướng Drawer -->
+            <div class="p-4 space-y-1">
+                <button onclick="navigateTo('products'); closeDrawer();" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#131e2e] transition-colors">
+                    <i data-lucide="box" class="w-4 h-4 text-kv-muted"></i>
+                    <span>Sản phẩm</span>
+                </button>
+
+                <button onclick="navigateTo('deposit'); closeDrawer();" class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#131e2e] transition-colors">
+                    <div class="flex items-center gap-3.5">
+                        <i data-lucide="credit-card" class="w-4 h-4 text-kv-muted"></i>
+                        <span>Nạp tiền ví</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">Bank + Thẻ</span>
+                </button>
+
+                <button onclick="openGuideModal(); closeDrawer();" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#131e2e] transition-colors">
+                    <i data-lucide="info" class="w-4 h-4 text-kv-muted"></i>
+                    <span>Hướng dẫn</span>
+                </button>
+
+                <button onclick="openSupportModal(); closeDrawer();" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#131e2e] transition-colors">
+                    <i data-lucide="phone-call" class="w-4 h-4 text-kv-muted"></i>
+                    <span>Liên hệ hỗ trợ</span>
+                </button>
+
+                <!-- Nút Bảng điều khiển Admin (Chỉ hiện khi là Admin) -->
+                <button id="drawer-admin-btn" onclick="navigateTo('admin'); closeDrawer();" class="w-full flex items-center justify-between px-4 py-3 my-1 rounded-2xl text-sm font-bold bg-gradient-to-r from-kv-cyan/20 to-sky-500/15 text-kv-cyan border border-kv-cyan/50 hover:bg-kv-cyan/30 transition-all shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        <span>Bảng điều khiển Admin</span>
+                    </div>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-kv-cyan text-slate-950">24/7</span>
+                </button>
+
+                <div class="pt-3 pb-1 px-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-kv-muted">TÀI KHOẢN & ĐƠN HÀNG</p>
+                </div>
+
+                <button onclick="navigateTo('downloads'); setDownloadTab('history'); closeDrawer();" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#131e2e] transition-colors">
+                    <i data-lucide="history" class="w-4 h-4 text-kv-muted"></i>
+                    <span>Lịch sử mua hàng</span>
+                </button>
+
+                <button onclick="openCartModal(); closeDrawer();" class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#131e2e] transition-colors">
+                    <div class="flex items-center gap-3.5">
+                        <i data-lucide="shopping-cart" class="w-4 h-4 text-kv-muted"></i>
+                        <span>Giỏ hàng</span>
+                    </div>
+                    <span id="drawer-cart-count" class="text-xs font-bold text-kv-cyan">0</span>
+                </button>
+
+                <!-- Pill Highlight: Tài khoản của tôi -->
+                <button onclick="handleAvatarClick(); closeDrawer();" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-full text-sm font-semibold text-slate-900 dark:text-white bg-slate-100 dark:bg-[#16202e] border border-slate-300 dark:border-slate-600/80 shadow-sm">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span id="drawer-account-label">Tài khoản của tôi</span>
+                </button>
+
+                <button onclick="navigateTo('notifications'); closeDrawer();" class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#131e2e] transition-colors">
+                    <div class="flex items-center gap-3.5">
+                        <i data-lucide="bell" class="w-4 h-4 text-kv-muted"></i>
+                        <span>Thông báo</span>
+                    </div>
+                    <span id="drawer-notif-badge" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-500 text-white">20</span>
+                </button>
+
+                <button onclick="openSubshopModal(); closeDrawer();" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium text-emerald-500 dark:text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+                    <i data-lucide="globe" class="w-4 h-4"></i>
+                    <span>Mở Shop Con (.keyvn.site)</span>
+                </button>
+
+                <button onclick="openApiModal(); closeDrawer();" class="w-full flex items-center gap-3.5 px-4 py-2.5 pl-11 rounded-2xl text-sm font-semibold text-kv-cyan hover:bg-kv-cyan/10 transition-colors">
+                    <span>Cổng API & ID Sản phẩm</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Drawer Footer: Đăng xuất / Đăng nhập + Enterprise Online -->
+        <div class="p-4 border-t border-slate-200 dark:border-kv-border/70 space-y-3 bg-slate-50 dark:bg-[#070d14]">
+            <button id="drawer-auth-action-btn" onclick="handleDrawerAuthAction()" class="w-full py-3 rounded-full border border-rose-500/50 bg-rose-500/5 hover:bg-rose-500/15 text-rose-400 text-sm font-semibold flex items-center justify-center gap-2 transition-colors">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>Đăng xuất</span>
+            </button>
+            <div class="flex items-center justify-between px-1 text-[11px] font-mono">
+                <span class="text-kv-muted font-semibold">KEY VN ENTERPRISE 2026</span>
+                <span class="text-emerald-400 font-bold flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ONLINE
+                </span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ==========================================
+         3. MAIN SPA CONTENT AREA
+    =========================================== -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-3">
+
+        <!-- Thanh thông báo chạy chữ 24/7 -->
+        <div class="mb-4 px-3.5 py-2 rounded-full bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border flex items-center gap-2.5 overflow-hidden">
+            <span class="px-2 py-0.5 rounded-full bg-kv-cyan/15 text-kv-cyan text-[10px] font-bold uppercase flex-shrink-0 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-kv-cyan animate-ping"></span> 24/7 AUTO
+            </span>
+            <div class="overflow-hidden flex-1 text-xs text-slate-600 dark:text-kv-muted">
+                <span id="site-marquee-text" class="animate-marquee font-medium">
+                    Hệ thống giao key tự động 24/7 • Nạp VietQR MBBank cộng tiền sau 3 giây • Nạp thẻ cào tự động chiết khấu ưu đãi • Cập nhật Astra Cheat & Fluorite FF OB mới nhất!
+                </span>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VIEW A: DANH MỤC SẢN PHẨM (#/products - MẶC ĐỊNH)
+        =========================================== -->
+        <section id="view-products" class="app-view space-y-5">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-kv-muted">
+                <button onclick="navigateTo('home')" class="hover:text-kv-cyan">Trang chủ</button>
+                <span>/</span>
+                <span class="text-slate-700 dark:text-slate-300 font-medium">Sản phẩm</span>
+            </nav>
+
+            <!-- Huy hiệu MARKETPLACE -->
+            <div class="w-full px-3.5 py-2 rounded-lg border border-kv-cyan/40 bg-kv-cyan/5 text-[11px] font-bold tracking-widest text-kv-cyan uppercase">
+                MARKETPLACE
+            </div>
+
+            <!-- Tiêu đề lớn & Mô tả chuẩn yêu cầu -->
+            <div class="space-y-1.5">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-kv-text">Danh mục sản phẩm</h1>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-kv-muted leading-relaxed">
+                    Khám phá các gói key bản quyền, công cụ và giải pháp kỹ thuật số tối tân.
+                </p>
+            </div>
+
+            <!-- Ô tìm kiếm 'Tìm sản phẩm...' kèm nút 'Tìm' có kính lúp -->
+            <form onsubmit="handleMarketSearch(event)" class="flex items-center gap-2.5">
+                <input type="text" id="market-search-input" oninput="liveMarketSearch(this.value)" placeholder="Tìm sản phẩm..." class="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border text-sm text-slate-900 dark:text-white placeholder-kv-muted focus:outline-none focus:border-kv-cyan">
+                <button type="submit" class="px-5 py-3 rounded-xl bg-white dark:bg-[#121e2e] border border-slate-200 dark:border-kv-border hover:border-kv-cyan text-sm font-semibold text-slate-800 dark:text-white flex items-center gap-2 transition-colors">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                    <span>Tìm</span>
+                </button>
+            </form>
+
+            <!-- Các nút lọc danh mục bo tròn dạng pill xếp dọc trên mobile / ngang trên desktop -->
+            <div class="flex flex-col md:grid md:grid-cols-4 gap-2.5">
+                <button onclick="filterMarketCategory('ALL')" data-mcat="ALL" class="market-cat-btn w-full py-3.5 px-4 rounded-full text-sm font-semibold bg-white dark:bg-kv-card text-kv-cyan border border-kv-cyan kv-pill-active transition-all">
+                    Tất cả danh mục
+                </button>
+                <button onclick="filterMarketCategory('PROXY IOS')" data-mcat="PROXY IOS" class="market-cat-btn w-full py-3.5 px-4 rounded-full text-sm font-semibold bg-white dark:bg-kv-card text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-kv-border hover:border-kv-cyan/60 transition-all">
+                    PROXY IOS
+                </button>
+                <button onclick="filterMarketCategory('Menu IOS')" data-mcat="Menu IOS" class="market-cat-btn w-full py-3.5 px-4 rounded-full text-sm font-medium bg-white dark:bg-kv-card text-slate-700 dark:text-kv-muted border border-slate-200 dark:border-kv-border hover:border-kv-cyan/60 transition-all">
+                    Menu IOS
+                </button>
+                <button onclick="filterMarketCategory('Menu Android')" data-mcat="Menu Android" class="market-cat-btn w-full py-3.5 px-4 rounded-full text-sm font-medium bg-white dark:bg-kv-card text-slate-700 dark:text-kv-muted border border-slate-200 dark:border-kv-border hover:border-kv-cyan/60 transition-all">
+                    Menu Android
+                </button>
+            </div>
+
+            <!-- Lưới thẻ sản phẩm Marketplace -->
+            <div id="market-products-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW B: TRANG CHỦ (#/home)
+        =========================================== -->
+        <section id="view-home" class="app-view hidden space-y-8">
+            <div class="text-center pt-2 sm:pt-5 space-y-5 relative">
+                <div class="absolute top-6 left-1/2 -translate-x-1/2 w-72 h-72 bg-kv-cyan/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-[#0b1624] border border-slate-200 dark:border-kv-border text-[11px] sm:text-xs font-semibold tracking-wider text-kv-cyan uppercase shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span>NỀN TẢNG SẢN PHẨM SỐ 2026 • GIAO KEY TỰ ĐỘNG 24/7</span>
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-kv-text leading-[1.18] max-w-2xl mx-auto">
+                    Nền tảng key bản quyền &amp; <br class="hidden sm:inline">
+                    <span class="text-kv-cyan">giải pháp kỹ thuật số</span> tự động
+                </h1>
+
+                <p class="text-slate-500 dark:text-kv-muted text-sm sm:text-base font-medium">
+                    Key nhanh - Giá tốt - Uy tín hàng đầu
+                </p>
+
+                <form onsubmit="handleHomeToMarketSearch(event)" class="max-w-xl mx-auto pt-1">
+                    <div class="flex items-center bg-white dark:bg-[#0c1623] border border-slate-200 dark:border-kv-border rounded-full p-1.5 pl-4 shadow-lg focus-within:border-kv-cyan transition-colors">
+                        <i data-lucide="search" class="w-4 h-4 text-kv-muted flex-shrink-0"></i>
+                        <input type="text" id="home-search-input" placeholder="Tìm kiếm nhanh key game, phần mềm..." class="w-full bg-transparent px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-kv-muted focus:outline-none">
+                        <button type="submit" class="px-5 py-2.5 rounded-full bg-kv-cyan hover:bg-kv-cyanDark text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-1.5 flex-shrink-0 transition-all shadow-md shadow-kv-cyan/25">
+                            <i data-lucide="search" class="w-3.5 h-3.5 stroke-[2.5]"></i>
+                            <span>Tìm kiếm</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- 2x2 Guarantees Grid -->
+                <div class="border-t border-slate-200 dark:border-kv-border/70 pt-6">
+                    <div class="grid grid-cols-2 gap-3.5 sm:gap-4 max-w-2xl mx-auto text-xs sm:text-sm text-left">
+                        <div class="flex items-center gap-2.5 text-slate-700 dark:text-slate-200">
+                            <i data-lucide="zap" class="w-4 h-4 text-kv-cyan flex-shrink-0"></i>
+                            <span>Kích hoạt tự động 3s</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 text-slate-700 dark:text-slate-200">
+                            <i data-lucide="shield" class="w-4 h-4 text-kv-cyan flex-shrink-0"></i>
+                            <span>Bảo hành trọn đời gói</span>
+                        </div>
+                        <button onclick="navigateTo('deposit')" class="flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:text-kv-cyan transition-colors">
+                            <i data-lucide="qr-code" class="w-4 h-4 text-kv-cyan flex-shrink-0"></i>
+                            <span>Nạp VietQR MBBank 24/7</span>
+                        </button>
+                        <button onclick="openSupportModal()" class="flex items-center gap-2.5 text-slate-700 dark:text-slate-200 hover:text-kv-cyan transition-colors">
+                            <i data-lucide="headphones" class="w-4 h-4 text-kv-cyan flex-shrink-0"></i>
+                            <span>Kỹ thuật viên hỗ trợ 24/7</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sản phẩm nổi bật -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="zap" class="w-5 h-5 text-kv-cyan fill-kv-cyan"></i>
+                        <h2 class="text-xl font-extrabold">Sản phẩm nổi bật</h2>
+                    </div>
+                    <button onclick="navigateTo('products')" class="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-kv-cyan hover:underline">
+                        <span>Xem tất cả danh mục</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div id="home-featured-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW C: NẠP TIỀN VÍ 24/7 (NGÂN HÀNG VIETQR + THẺ CÀO)
+        =========================================== -->
+        <section id="view-deposit" class="app-view hidden space-y-6 max-w-3xl mx-auto">
+            <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-kv-muted">
+                <button onclick="navigateTo('products')" class="hover:text-kv-cyan">Sản phẩm</button>
+                <span>/</span>
+                <span class="text-slate-700 dark:text-slate-300 font-medium">Nạp tiền ví 24/7</span>
+            </nav>
+
+            <div class="w-full px-3.5 py-2 rounded-lg border border-kv-cyan/40 bg-kv-cyan/5 text-[11px] font-bold tracking-widest text-kv-cyan uppercase flex items-center justify-between">
+                <span>AUTO PAYMENT GATEWAY 24/7</span>
+                <span class="text-emerald-400">• HOẠT ĐỘNG TỰ ĐỘNG</span>
+            </div>
+
+            <!-- Balance Banner -->
+            <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <p class="text-xs text-kv-muted">Tài khoản nhận tiền: <strong class="text-slate-900 dark:text-white" id="deposit-user-label">Nam (admin@keyvn.site)</strong></p>
+                    <p class="text-2xl sm:text-3xl font-black text-kv-cyan mt-1" id="deposit-balance-display">0đ</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-2 rounded-2xl">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>Cộng tiền tự động 3s - 10s</span>
+                </div>
+            </div>
+
+            <!-- 2 Tabs Nạp tiền -->
+            <div class="grid grid-cols-2 gap-2.5 p-1.5 rounded-full bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border">
+                <button onclick="switchDepositMethod('bank')" id="dep-tab-bank" class="py-3 px-4 rounded-full text-xs sm:text-sm font-bold bg-kv-cyan text-slate-950 flex items-center justify-center gap-2 transition-all shadow">
+                    <i data-lucide="qr-code" class="w-4 h-4"></i>
+                    <span>Ngân hàng VietQR 24/7</span>
+                </button>
+                <button onclick="switchDepositMethod('card')" id="dep-tab-card" class="py-3 px-4 rounded-full text-xs sm:text-sm font-semibold text-slate-600 dark:text-kv-muted hover:text-kv-cyan flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="smartphone" class="w-4 h-4"></i>
+                    <span>Nạp Thẻ Cào Tự Động</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: NẠP NGÂN HÀNG VIETQR AUTO 24/7 -->
+            <div id="deposit-panel-bank" class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-5 sm:p-6 space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    <div class="md:col-span-5 flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-kv-cyan/40 shadow-lg space-y-2">
+                        <img id="vietqr-image" src="https://img.vietqr.io/image/MB-0909888666-compact2.png?amount=100000&addInfo=KEYVN%20NAP%20NAM&accountName=VO%20DINH%20BAO%20NAM" alt="VietQR Code" onerror="this.onerror=null;this.src='https://placehold.co/240x240/ffffff/070d14?text=VIETQR+24/7';" class="w-48 h-48 object-contain rounded-xl">
+                        <span class="text-[11px] font-bold text-slate-800 tracking-wide">QUÉT MÃ VIETQR TỰ ĐỘNG</span>
+                    </div>
+
+                    <div class="md:col-span-7 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-kv-muted mb-1">Ngân hàng thụ hưởng:</label>
+                                <input type="text" id="display-bank-badge" readonly value="MBBank (MB)" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-xs font-bold text-slate-900 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-kv-muted mb-1">Số tiền nạp (VNĐ):</label>
+                                <input type="number" id="bank-deposit-amount" oninput="updateVietQRPreview()" value="100000" min="10000" step="10000" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border font-mono text-xs font-bold text-kv-cyan focus:outline-none focus:border-kv-cyan">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5">
+                            <button type="button" onclick="selectQuickBankAmount(20000)" class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border hover:border-kv-cyan text-xs font-bold text-kv-cyan">20k</button>
+                            <button type="button" onclick="selectQuickBankAmount(50000)" class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border hover:border-kv-cyan text-xs font-bold text-kv-cyan">50k</button>
+                            <button type="button" onclick="selectQuickBankAmount(100000)" class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border hover:border-kv-cyan text-xs font-bold text-kv-cyan">100k</button>
+                            <button type="button" onclick="selectQuickBankAmount(200000)" class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border hover:border-kv-cyan text-xs font-bold text-kv-cyan">200k</button>
+                            <button type="button" onclick="selectQuickBankAmount(500000)" class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border hover:border-kv-cyan text-xs font-bold text-kv-cyan">500k</button>
+                        </div>
+
+                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border space-y-2.5 text-xs">
+                            <div class="flex items-center justify-between">
+                                <span class="text-kv-muted">Ngân hàng Admin:</span>
+                                <span id="display-bank-name" class="font-bold text-slate-900 dark:text-white">MBBank (Quân Đội)</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-kv-muted">Số tài khoản:</span>
+                                <button type="button" onclick="copyText(siteConfig.bankAccount, 'Đã copy Số tài khoản')" class="font-mono font-bold text-kv-cyan flex items-center gap-1.5 hover:underline">
+                                    <span id="display-bank-acc">0909888666</span>
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-kv-muted">Chủ tài khoản:</span>
+                                <span id="display-bank-owner" class="font-bold text-slate-900 dark:text-white uppercase">VO DINH BAO NAM</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-1.5 border-t border-slate-200 dark:border-kv-border/70">
+                                <span class="text-kv-muted">Nội dung chuyển khoản:</span>
+                                <button type="button" onclick="copyText(getTransferMemo(), 'Đã copy Nội dung CK')" class="font-mono font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/30 flex items-center gap-1.5">
+                                    <span id="display-bank-memo">KEYVN NAP NAM</span>
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn-confirm-bank-auto" onclick="simulateAutoBankDeposit()" class="w-full py-3.5 px-5 rounded-full bg-kv-cyan hover:bg-kv-cyanDark text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-kv-cyan/25 transition-all">
+                            <i data-lucide="zap" class="w-4 h-4 fill-slate-950"></i>
+                            <span>Xác nhận đã chuyển khoản (Auto 24/7)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: NẠP THẺ CÀO TỰ ĐỘNG -->
+            <div id="deposit-panel-card" class="hidden bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-5 sm:p-6 space-y-5">
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-kv-border pb-3">
+                    <div>
+                        <h3 class="font-bold text-base text-slate-900 dark:text-white">Gạch Thẻ Cào Tự Động 24/7</h3>
+                        <p class="text-xs text-kv-muted">Hỗ trợ Viettel, Vinaphone, Mobifone, Garena, Zing</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-kv-cyan/15 text-kv-cyan font-bold text-xs">
+                        Thực nhận: <span id="card-rate-badge">85%</span>
+                    </span>
+                </div>
+
+                <form onsubmit="handleCardDepositSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-kv-muted mb-1.5">Chọn nhà mạng *</label>
+                            <select id="card-telco-select" class="w-full px-3.5 py-3 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-kv-cyan">
+                                <option value="Viettel">Viettel</option>
+                                <option value="Vinaphone">Vinaphone</option>
+                                <option value="Mobifone">Mobifone</option>
+                                <option value="Garena">Thẻ Garena</option>
+                                <option value="Zing">Thẻ Zing</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-kv-muted mb-1.5">Chọn mệnh giá thẻ *</label>
+                            <select id="card-amount-select" onchange="updateCardNetReceive()" class="w-full px-3.5 py-3 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm font-bold text-kv-cyan focus:outline-none focus:border-kv-cyan">
+                                <option value="10000">10.000đ</option>
+                                <option value="20000">20.000đ</option>
+                                <option value="50000" selected>50.000đ</option>
+                                <option value="100000">100.000đ</option>
+                                <option value="200000">200.000đ</option>
+                                <option value="500000">500.000đ</option>
+                                <option value="1000000">1.000.000đ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-kv-muted mb-1.5">Số Seri thẻ *</label>
+                            <input type="text" id="card-serial-input" required placeholder="Nhập chính xác dãy số Seri..." class="w-full px-3.5 py-3 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border font-mono text-sm text-slate-900 dark:text-white focus:outline-none focus:border-kv-cyan">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-kv-muted mb-1.5">Mã thẻ cào (PIN) *</label>
+                            <input type="text" id="card-code-input" required placeholder="Nhập mã số dưới lớp tráng bạc..." class="w-full px-3.5 py-3 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border font-mono text-sm text-kv-cyan focus:outline-none focus:border-kv-cyan">
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border flex items-center justify-between text-xs">
+                        <span class="text-kv-muted">Tiền thực nhận vào ví sau chiết khấu:</span>
+                        <span id="card-net-receive-display" class="font-extrabold text-base text-emerald-400">42.500đ</span>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 px-5 rounded-full bg-kv-cyan hover:bg-kv-cyanDark text-slate-950 font-extrabold text-sm shadow-lg shadow-kv-cyan/25 flex items-center justify-center gap-2 transition-all">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>Nạp thẻ cào ngay</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Lịch sử giao dịch nạp tiền -->
+            <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-200 dark:border-kv-border flex items-center justify-between">
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">Lịch sử nạp tiền &amp; gạch thẻ</h3>
+                    <span class="text-[11px] text-kv-muted">Tự động cập nhật 24/7</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-kv-border bg-slate-50 dark:bg-[#09111c] text-[11px] font-bold uppercase text-kv-muted">
+                                <th class="py-3 px-4">Phương thức</th>
+                                <th class="py-3 px-4">Chi tiết / Seri</th>
+                                <th class="py-3 px-4">Thực nhận</th>
+                                <th class="py-3 px-4">Trạng thái</th>
+                                <th class="py-3 px-4">Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-deposit-history-tbody" class="divide-y divide-slate-200 dark:divide-kv-border/60 text-xs"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW D: HỒ SƠ CÁ NHÂN (USER COCKPIT - Chuẩn hình ảnh)
+        =========================================== -->
+        <section id="view-profile" class="app-view hidden space-y-5 max-w-xl mx-auto">
+            <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-kv-muted">
+                <button onclick="navigateTo('products')" class="hover:text-kv-cyan">Sản phẩm</button>
+                <span>/</span>
+                <span class="text-slate-700 dark:text-slate-300 font-medium">Tài khoản</span>
+            </nav>
+
+            <div class="w-full px-3.5 py-2 rounded-lg border border-kv-cyan/40 bg-kv-cyan/5 text-[11px] font-bold tracking-widest text-kv-cyan uppercase">
+                USER COCKPIT
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <i data-lucide="user" class="w-5 h-5 text-kv-muted"></i>
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-kv-text">Quản lý tài khoản cá nhân</h1>
+            </div>
+
+            <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-6 space-y-6 shadow-xl">
+                <div class="flex flex-col items-center text-center space-y-2.5 pt-1">
+                    <div class="w-20 h-20 rounded-full bg-[#102033] border-2 border-kv-cyan/60 flex items-center justify-center shadow-lg shadow-kv-cyan/15">
+                        <span id="profile-avatar-char" class="text-3xl font-black text-kv-cyan">N</span>
+                    </div>
+                    <div>
+                        <h2 id="profile-display-name" class="text-xl font-bold text-slate-900 dark:text-white">Nam</h2>
+                        <p id="profile-email-text" class="text-xs sm:text-sm text-slate-500 dark:text-kv-muted mt-0.5">admin@keyvn.site</p>
+                    </div>
+                </div>
+
+                <div class="divide-y divide-slate-200 dark:divide-kv-border/70 text-sm">
+                    <div class="py-3.5 flex items-center justify-between">
+                        <span class="text-slate-500 dark:text-kv-muted">Số dư ví</span>
+                        <span id="profile-wallet-balance" class="font-bold text-kv-cyan text-base">0đ</span>
+                    </div>
+                    <div class="py-3.5 flex items-center justify-between">
+                        <span class="text-slate-500 dark:text-kv-muted">Vai trò</span>
+                        <span id="profile-role-text" class="font-semibold text-slate-900 dark:text-white">Admin / Seller</span>
+                    </div>
+                    <div class="py-3.5 flex items-center justify-between">
+                        <span class="text-slate-500 dark:text-kv-muted">Ngày tham gia</span>
+                        <span id="profile-joined-text" class="font-mono text-xs sm:text-sm text-slate-800 dark:text-slate-200">07/10/2026 19:27</span>
+                    </div>
+                </div>
+
+                <button onclick="navigateTo('deposit')" class="w-full py-3.5 px-5 rounded-2xl bg-kv-cyan hover:bg-kv-cyanDark text-slate-950 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-kv-cyan/25 transition-all">
+                    <i data-lucide="wallet" class="w-4 h-4 stroke-[2.4]"></i>
+                    <span>Nạp tiền ví ngay</span>
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="openAccountInfoModal()" class="w-full py-3.5 px-5 rounded-full bg-white dark:bg-kv-card border border-kv-cyan kv-pill-active text-sm font-bold text-kv-cyan transition-all">
+                    Thông tin tài khoản
+                </button>
+
+                <button onclick="openSubshopModal()" class="w-full py-3.5 px-5 rounded-full bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border hover:border-kv-cyan/60 text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="globe" class="w-4 h-4 text-kv-muted"></i>
+                    <span>Mở Shop Con (.keyvn.site)</span>
+                </button>
+
+                <button onclick="openPasswordModal()" class="w-full py-3.5 px-5 rounded-full bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border hover:border-kv-cyan/60 text-sm font-semibold text-slate-700 dark:text-slate-200 transition-all">
+                    Đổi mật khẩu
+                </button>
+
+                <button id="profile-admin-shortcut" onclick="navigateTo('admin')" class="w-full py-3.5 px-5 rounded-full bg-gradient-to-r from-kv-cyan/20 to-sky-500/20 border border-kv-cyan text-sm font-extrabold text-kv-cyan flex items-center justify-center gap-2 hover:bg-kv-cyan/30 transition-all shadow-md">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>Bảng điều khiển Admin</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW E: ĐĂNG NHẬP & ĐĂNG KÝ THÀNH VIÊN 24/7
+        =========================================== -->
+        <section id="view-auth" class="app-view hidden space-y-5 max-w-md mx-auto pt-4">
+            <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-6 space-y-5 shadow-2xl">
+                <div class="text-center space-y-1.5">
+                    <div class="w-12 h-12 rounded-2xl bg-kv-cyan/15 border border-kv-cyan/40 text-kv-cyan flex items-center justify-center mx-auto">
+                        <i data-lucide="lock" class="w-6 h-6"></i>
+                    </div>
+                    <h2 id="auth-form-title" class="text-xl font-extrabold text-slate-900 dark:text-white">Đăng nhập tài khoản KEYVN</h2>
+                    <p class="text-xs text-kv-muted">Hệ thống đăng nhập &amp; kích hoạt key tự động 24/7</p>
+                </div>
+
+                <!-- Switch Login / Register -->
+                <div class="grid grid-cols-2 gap-1.5 p-1 rounded-full bg-slate-100 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border">
+                    <button type="button" onclick="setAuthMode('login')" id="auth-tab-login" class="py-2 rounded-full text-xs font-bold bg-kv-cyan text-slate-950">Đăng nhập</button>
+                    <button type="button" onclick="setAuthMode('register')" id="auth-tab-register" class="py-2 rounded-full text-xs font-semibold text-kv-muted">Đăng ký mới</button>
+                </div>
+
+                <!-- LOGIN FORM -->
+                <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-kv-muted mb-1">Email đăng nhập *</label>
+                        <input type="email" id="login-email" required value="admin@keyvn.site" placeholder="admin@keyvn.site" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm text-slate-900 dark:text-white focus:outline-none focus:border-kv-cyan">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-kv-muted mb-1">Mật khẩu *</label>
+                        <input type="password" id="login-password" required value="admin123" placeholder="••••••" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm text-slate-900 dark:text-white focus:outline-none focus:border-kv-cyan">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-full bg-kv-cyan hover:bg-kv-cyanDark text-slate-950 font-extrabold text-sm shadow-lg shadow-kv-cyan/25">
+                        Đăng nhập ngay
+                    </button>
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-[11px] text-kv-muted space-y-1">
+                        <p><strong class="text-kv-cyan">Admin mẫu:</strong> admin@keyvn.site / admin123</p>
+                        <p><strong class="text-emerald-400">Thành viên mẫu:</strong> user@keyvn.site / 123456</p>
+                    </div>
+                </form>
+
+                <!-- REGISTER FORM -->
+                <form id="register-form" onsubmit="handleUserRegister(event)" class="hidden space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-kv-muted mb-1">Tên hiển thị *</label>
+                        <input type="text" id="reg-name" required placeholder="VD: Minh Tuấn FF" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-kv-muted mb-1">Email đăng ký *</label>
+                        <input type="email" id="reg-email" required placeholder="email@gmail.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-kv-muted mb-1">Mật khẩu *</label>
+                        <input type="password" id="reg-password" required placeholder="Tối thiểu 6 ký tự" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-full bg-kv-cyan hover:bg-kv-cyanDark text-slate-950 font-extrabold text-sm shadow-lg shadow-kv-cyan/25">
+                        Tạo tài khoản 24/7
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW F: TẢI XUỐNG & LỊCH SỬ MUA KEY
+        =========================================== -->
+        <section id="view-downloads" class="app-view hidden space-y-5">
+            <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-kv-muted">
+                <button onclick="navigateTo('products')" class="hover:text-kv-cyan">Sản phẩm</button>
+                <span>/</span>
+                <span class="text-slate-700 dark:text-slate-300 font-medium">Tải xuống &amp; Key đã mua</span>
+            </nav>
+
+            <div class="grid grid-cols-2 gap-2 p-1.5 rounded-full bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border max-w-md">
+                <button onclick="setDownloadTab('files')" id="dl-tab-files" class="py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-kv-cyan text-slate-950 transition-all">
+                    Tải file IPA / APK
+                </button>
+                <button onclick="setDownloadTab('history')" id="dl-tab-history" class="py-2.5 px-4 rounded-full text-xs sm:text-sm font-semibold text-slate-600 dark:text-kv-muted hover:text-kv-cyan transition-all">
+                    Key đã mua (<span id="purchased-count-badge">0</span>)
+                </button>
+            </div>
+
+            <div id="dl-panel-files" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded bg-kv-cyan/15 text-kv-cyan text-[10px] font-bold uppercase">IPA iOS 16 - 27.x</span>
+                        <span class="text-[11px] font-bold text-emerald-400">• ONLINE 24/7</span>
+                    </div>
+                    <h3 class="font-bold text-base">Astra Cheat IPA v2.14 (Signed)</h3>
+                    <p class="text-xs text-kv-muted">Cài đặt trực tiếp qua ESign, Scarlet hoặc TrollStore. Tích hợp Proxy Anti-ban.</p>
+                    <button onclick="triggerFileDownload('Astra_Cheat_IPA_v2.14.ipa')" class="w-full py-2.5 rounded-full bg-kv-cyan text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Tải xuống IPA (148 MB)</span>
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-bold uppercase">APK ANDROID 10-15</span>
+                        <span class="text-[11px] font-bold text-emerald-400">• ONLINE 24/7</span>
+                    </div>
+                    <h3 class="font-bold text-base">Cerberus Mod Menu APK v5.1</h3>
+                    <p class="text-xs text-kv-muted">Menu nổi 120FPS, đăng nhập tài khoản chính an toàn không cần Root máy.</p>
+                    <button onclick="triggerFileDownload('Cerberus_Mod_Menu_v5.1.apk')" class="w-full py-2.5 rounded-full bg-kv-cyan text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Tải xuống APK (192 MB)</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="dl-panel-history" class="hidden space-y-3">
+                <div id="purchased-keys-container" class="space-y-3"></div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW G: THÔNG BÁO (NOTIFICATIONS)
+        =========================================== -->
+        <section id="view-notifications" class="app-view hidden space-y-5 max-w-2xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-extrabold">Thông báo hệ thống</h1>
+                    <p class="text-xs text-kv-muted">Cập nhật phiên bản Menu FF, trạng thái nạp VietQR &amp; Thẻ cào 24/7</p>
+                </div>
+                <button onclick="markNotificationsRead()" class="px-3.5 py-2 rounded-full bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border text-xs font-semibold text-kv-cyan hover:border-kv-cyan">
+                    Đánh dấu đã đọc
+                </button>
+            </div>
+            <div id="notifications-list-container" class="space-y-3"></div>
+        </section>
+
+        <!-- ==========================================
+             VIEW H: BẢNG ĐIỀU KHIỂN QUẢN TRỊ ADMIN (ADMIN COCKPIT 24/7)
+        =========================================== -->
+        <section id="view-admin" class="app-view hidden space-y-6">
+            <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1.5">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-[11px] font-bold text-emerald-400 uppercase">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span>ADMIN COCKPIT 24/7 • ĐANG HOẠT ĐỘNG</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-black">Quản Trị Hệ Thống KEYVN</h1>
+                    <p class="text-xs text-kv-muted">Quản lý Kho Key, Sản phẩm, Thành viên, Duyệt Thẻ Cào &amp; Cài đặt Ngân hàng thụ hưởng</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="setAdminTab('keys')" class="px-4 py-2.5 rounded-full bg-kv-cyan text-slate-950 font-extrabold text-xs">+ Nhập Kho Key</button>
+                    <button onclick="openAdminProductModal()" class="px-4 py-2.5 rounded-full bg-slate-100 dark:bg-[#132033] border border-slate-200 dark:border-kv-border text-xs font-bold">+ Thêm Sản Phẩm</button>
+                </div>
+            </div>
+
+            <!-- 5 Admin Tabs -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                <button onclick="setAdminTab('keys')" data-atab="keys" class="admin-tab-btn px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-kv-cyan text-slate-950 whitespace-nowrap">
+                    1. Kho Key FF / iOS / Android
+                </button>
+                <button onclick="setAdminTab('products')" data-atab="products" class="admin-tab-btn px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-white dark:bg-kv-card text-kv-muted border border-slate-200 dark:border-kv-border whitespace-nowrap">
+                    2. Sản phẩm &amp; Giá gói
+                </button>
+                <button onclick="setAdminTab('deposits')" data-atab="deposits" class="admin-tab-btn px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-white dark:bg-kv-card text-kv-muted border border-slate-200 dark:border-kv-border whitespace-nowrap">
+                    3. Duyệt Thẻ &amp; Bank (<span id="admin-pending-count">0</span>)
+                </button>
+                <button onclick="setAdminTab('members')" data-atab="members" class="admin-tab-btn px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-white dark:bg-kv-card text-kv-muted border border-slate-200 dark:border-kv-border whitespace-nowrap">
+                    4. Thành viên (<span id="admin-users-count">0</span>)
+                </button>
+                <button onclick="setAdminTab('bank')" data-atab="bank" class="admin-tab-btn px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-white dark:bg-kv-card text-kv-muted border border-slate-200 dark:border-kv-border whitespace-nowrap">
+                    5. Cài đặt Ngân hàng &amp; Chiết khấu
+                </button>
+            </div>
+
+            <!-- ADMIN TAB 1: KHO KEY -->
+            <div id="admin-panel-keys" class="admin-panel space-y-5">
+                <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-5 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-kv-border pb-3">
+                        <h3 class="font-bold text-base">Nhập Kho Key Hàng Loạt</h3>
+                        <button type="button" onclick="autoFill10RandomKeys()" class="px-3.5 py-1.5 rounded-full bg-kv-cyan/15 border border-kv-cyan/40 text-kv-cyan text-xs font-bold hover:bg-kv-cyan/25">
+                            ⚡ Tự sinh 10 key ngẫu nhiên (KEYVN-FF-XXXX-XXXX)
+                        </button>
+                    </div>
+                    <form onsubmit="handleBulkImportKeys(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <div>
+                                <label class="block text-xs font-semibold text-kv-muted mb-1">Chọn sản phẩm *</label>
+                                <select id="bulk-key-product" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-kv-muted mb-1">Chọn gói thời hạn *</label>
+                                <select id="bulk-key-tier" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm">
+                                    <option value="1 Ngày">1 Ngày</option>
+                                    <option value="7 Ngày">7 Ngày</option>
+                                    <option value="30 Ngày" selected>30 Ngày</option>
+                                    <option value="Vĩnh viễn">Vĩnh viễn</option>
+                                </select>
+                            </div>
+                        </div>
+                        <textarea id="bulk-key-textarea" rows="3" required placeholder="Dán danh sách Key (mỗi dòng 1 mã)..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border font-mono text-xs text-kv-cyan resize-none"></textarea>
+                        <button type="submit" class="px-6 py-3 rounded-full bg-kv-cyan text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-kv-cyan/25">
+                            Nạp vào kho &amp; Cập nhật Sẵn hàng
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 dark:border-kv-border bg-slate-50 dark:bg-[#09111c] text-[11px] font-bold uppercase text-kv-muted">
+                                    <th class="py-3 px-4">Mã Key</th>
+                                    <th class="py-3 px-4">Sản phẩm / Gói</th>
+                                    <th class="py-3 px-4">HWID / Người mua</th>
+                                    <th class="py-3 px-4">Trạng thái</th>
+                                    <th class="py-3 px-4 text-right">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adm-keys-tbody" class="divide-y divide-slate-200 dark:divide-kv-border/60 text-xs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN TAB 2: SẢN PHẨM -->
+            <div id="admin-panel-products" class="admin-panel hidden space-y-4">
+                <div id="adm-products-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- ADMIN TAB 3: DUYỆT THẺ & BANK -->
+            <div id="admin-panel-deposits" class="admin-panel hidden bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-kv-border bg-slate-50 dark:bg-[#09111c] text-[11px] font-bold uppercase text-kv-muted">
+                                <th class="py-3 px-4">Người nạp</th>
+                                <th class="py-3 px-4">Phương thức &amp; Seri</th>
+                                <th class="py-3 px-4">Thực nhận</th>
+                                <th class="py-3 px-4">Trạng thái</th>
+                                <th class="py-3 px-4 text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adm-deposits-tbody" class="divide-y divide-slate-200 dark:divide-kv-border/60 text-xs"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ADMIN TAB 4: QUẢN LÝ THÀNH VIÊN -->
+            <div id="admin-panel-members" class="admin-panel hidden bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-kv-border bg-slate-50 dark:bg-[#09111c] text-[11px] font-bold uppercase text-kv-muted">
+                                <th class="py-3 px-4">Tên / Email</th>
+                                <th class="py-3 px-4">Vai trò</th>
+                                <th class="py-3 px-4">Số dư ví</th>
+                                <th class="py-3 px-4 text-right">Cộng / Trừ tiền nhanh</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adm-members-tbody" class="divide-y divide-slate-200 dark:divide-kv-border/60 text-xs"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ADMIN TAB 5: CÀI ĐẶT NGÂN HÀNG THỤ HƯỞNG VIETQR & CHIẾT KHẤU THẺ -->
+            <div id="admin-panel-bank" class="admin-panel hidden max-w-2xl">
+                <form onsubmit="saveSiteConfiguration(event)" class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl p-6 space-y-4">
+                    <h3 class="font-bold text-base border-b border-slate-200 dark:border-kv-border pb-3">Cài Đặt Ngân Hàng Nhận Tiền Của Bạn (VietQR 24/7)</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-kv-muted mb-1">Ngân hàng nhận tiền *</label>
+                            <select id="cfg-bank-code" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm font-bold">
+                                <option value="MB">MBBank (Quân Đội)</option>
+                                <option value="VCB">Vietcombank (VCB)</option>
+                                <option value="TCB">Techcombank (TCB)</option>
+                                <option value="ACB">ACB (Á Châu)</option>
+                                <option value="BIDV">BIDV</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-kv-muted mb-1">Số tài khoản của bạn *</label>
+                            <input type="text" id="cfg-bank-acc" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border font-mono text-sm font-bold text-kv-cyan">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-kv-muted mb-1">Tên chủ tài khoản (Không dấu) *</label>
+                            <input type="text" id="cfg-bank-owner" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm font-bold uppercase">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-kv-muted mb-1">Tỷ lệ khách nhận khi nạp thẻ (%)</label>
+                            <input type="number" id="cfg-card-rate" min="50" max="100" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm font-bold text-emerald-400">
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                        <button type="submit" class="px-6 py-3 rounded-full bg-kv-cyan text-slate-950 font-extrabold text-sm shadow-lg shadow-kv-cyan/25">
+                            Lưu Ngân Hàng &amp; Cập Nhật VietQR
+                        </button>
+                        <button type="button" onclick="resetAllDefaultData()" class="px-4 py-2.5 rounded-full bg-rose-500/15 border border-rose-500/40 text-rose-400 text-xs font-bold">
+                            Khôi phục dữ liệu mẫu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================
+         4. BOTTOM GLASSMORPHISM NAVIGATION BAR (5 TAB CHUẨN HÌNH ẢNH)
+    =========================================== -->
+    <nav aria-label="Thanh điều hướng đáy" class="fixed bottom-3 inset-x-0 z-40 px-3 sm:px-6 pointer-events-none">
+        <div class="max-w-lg mx-auto kv-bottom-glass rounded-full px-2 py-2 flex items-center justify-around pointer-events-auto">
+            <button onclick="navigateTo('home')" data-bnav="home" class="bottom-nav-btn flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-2xl text-slate-500 dark:text-slate-300 hover:text-kv-cyan transition-all">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="text-[10px] sm:text-[11px] font-medium">Trang chủ</span>
+            </button>
+
+            <button onclick="navigateTo('products')" data-bnav="products" class="bottom-nav-btn flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-2xl text-kv-cyan transition-all">
+                <i data-lucide="search" class="w-5 h-5"></i>
+                <span class="text-[10px] sm:text-[11px] font-semibold">Tìm kiếm</span>
+            </button>
+
+            <button onclick="navigateTo('notifications')" data-bnav="notifications" class="bottom-nav-btn relative flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-2xl text-slate-500 dark:text-slate-300 hover:text-kv-cyan transition-all">
+                <div class="relative">
+                    <i data-lucide="inbox" class="w-5 h-5"></i>
+                    <span id="bottom-notif-badge" class="absolute -top-2 -right-3.5 px-1.5 py-[1px] rounded-full bg-[#ef4444] text-white font-bold text-[10px] leading-tight shadow-md">20</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-medium">Thông báo</span>
+            </button>
+
+            <button onclick="handleAvatarClick()" data-bnav="profile" class="bottom-nav-btn flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-2xl text-slate-500 dark:text-slate-300 hover:text-kv-cyan transition-all">
+                <i data-lucide="user" class="w-5 h-5"></i>
+                <span class="text-[10px] sm:text-[11px] font-medium">Hồ sơ</span>
+            </button>
+
+            <button onclick="navigateTo('downloads')" data-bnav="downloads" class="bottom-nav-btn flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-2xl text-slate-500 dark:text-slate-300 hover:text-kv-cyan transition-all">
+                <i data-lucide="download" class="w-5 h-5"></i>
+                <span class="text-[10px] sm:text-[11px] font-medium">Tải xuống</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==========================================
+         MODALS & TOAST
+    =========================================== -->
+    <!-- MODAL GIỎ HÀNG -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+        <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-kv-border pb-3">
+                <h3 class="text-lg font-extrabold flex items-center gap-2">
+                    <i data-lucide="shopping-cart" class="w-5 h-5 text-kv-cyan"></i>
+                    <span>Giỏ hàng của bạn</span>
+                </h3>
+                <button onclick="closeModal('cart-modal')" class="p-1.5 rounded-full bg-slate-100 dark:bg-[#131e2e] text-kv-muted">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div id="cart-items-list" class="space-y-2.5 max-h-60 overflow-y-auto"></div>
+            <div class="pt-3 border-t border-slate-200 dark:border-kv-border space-y-3">
+                <div class="flex items-center justify-between text-xs sm:text-sm">
+                    <span class="text-kv-muted">Số dư ví: <strong id="cart-user-bal" class="text-kv-cyan">0đ</strong></span>
+                    <span class="font-bold">Tổng cộng: <strong id="cart-total-price" class="text-kv-cyan text-base">0đ</strong></span>
+                </div>
+                <button onclick="checkoutCartItems()" class="w-full py-3.5 rounded-full bg-kv-cyan text-slate-950 font-extrabold text-sm shadow-lg shadow-kv-cyan/25">
+                    Thanh toán &amp; Nhận Key Tự Động
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN THÊM / SỬA SẢN PHẨM -->
+    <div id="admin-product-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+        <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-kv-border pb-3">
+                <h3 id="adm-prod-modal-title" class="text-lg font-extrabold">Thêm Sản Phẩm Mới</h3>
+                <button onclick="closeModal('admin-product-modal')" class="p-1.5 rounded-full bg-slate-100 dark:bg-[#131e2e] text-kv-muted">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <form onsubmit="saveAdminProductForm(event)" class="space-y-3.5">
+                <input type="hidden" id="adm-prod-id">
+                <div>
+                    <label class="block text-xs font-semibold text-kv-muted mb-1">Tên sản phẩm *</label>
+                    <input type="text" id="adm-prod-name" required placeholder="VD: Astra Cheat" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-kv-muted mb-1">Danh mục *</label>
+                        <select id="adm-prod-cat" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm">
+                            <option value="PROXY IOS">PROXY IOS</option>
+                            <option value="Menu IOS">Menu IOS</option>
+                            <option value="Menu Android">Menu Android</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-kv-muted mb-1">Số lượng sẵn hàng</label>
+                        <input type="number" id="adm-prod-stock" value="1128" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-sm font-bold text-emerald-400">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-kv-muted mb-1">Giá 1 Ngày</label>
+                        <input type="number" id="adm-prod-p1" value="25000" step="1000" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-kv-muted mb-1">Giá 7 Ngày</label>
+                        <input type="number" id="adm-prod-p7" value="90000" step="1000" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-kv-muted mb-1">Giá 30 Ngày</label>
+                        <input type="number" id="adm-prod-p30" value="220000" step="1000" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-xs font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-kv-muted mb-1">Giá Vĩnh viễn</label>
+                        <input type="number" id="adm-prod-plife" value="550000" step="1000" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-xs font-bold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-kv-muted mb-1">Tính năng nổi bật (mỗi dòng 1 ý)</label>
+                    <textarea id="adm-prod-features" rows="3" placeholder="ipa hỗ trợ từ ios 16 - 27x&#10;Anti-ban an toàn leo rank" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border text-xs resize-none"></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-full bg-kv-cyan text-slate-950 font-extrabold text-sm">Lưu Sản Phẩm</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PHỤ TRỢ -->
+    <div id="utility-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+        <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-kv-border pb-3">
+                <h3 id="utility-modal-title" class="text-lg font-extrabold">Thông báo</h3>
+                <button onclick="closeModal('utility-modal')" class="p-1.5 rounded-full bg-slate-100 dark:bg-[#131e2e] text-kv-muted">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div id="utility-modal-body" class="space-y-4 text-sm"></div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="kv-toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 -translate-y-24 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-[#0e1929] border border-kv-cyan/70 text-white px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 text-xs sm:text-sm font-semibold">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-kv-cyan flex-shrink-0"></i>
+            <span id="kv-toast-text">Thao tác thành công!</span>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC (HASH ROUTING #/products + AUTH + 24/7)
+    =========================================== -->
+    <script>
+        const STORAGE = {
+            PRODUCTS: 'keyvn_v3_products',
+            KEYS: 'keyvn_v3_keys',
+            USERS: 'keyvn_v3_users',
+            CURRENT_USER: 'keyvn_v3_current_user',
+            DEPOSITS: 'keyvn_v3_deposits',
+            CART: 'keyvn_v3_cart',
+            CONFIG: 'keyvn_v3_config',
+            NOTIFS: 'keyvn_v3_notifs'
+        };
+
+        const BANK_NAMES = {
+            MB: 'MBBank (Quân Đội)',
+            VCB: 'Vietcombank (VCB)',
+            TCB: 'Techcombank (TCB)',
+            ACB: 'ACB (Á Châu)',
+            BIDV: 'BIDV'
+        };
+
+        const initialConfig = {
+            shopName: 'KEYVN',
+            bankCode: 'MB',
+            bankAccount: '0909888666',
+            bankOwner: 'VO DINH BAO NAM',
+            cardRate: 85
+        };
+
+        const initialProducts = [
+            {
+                id: 'prod_astra',
+                name: 'Astra Cheat',
+                category: 'PROXY IOS',
+                baseStock: 1128,
+                logoStyle: 'astra-k',
+                features: [
+                    'ipa hỗ trợ từ ios 16 - 27x',
+                    'Anti-ban an toàn leo rank',
+                    'Cài trực tiếp ESign / TrollStore 24/7'
+                ],
+                tiers: [
+                    { label: '1 Ngày', price: 25000 },
+                    { label: '7 Ngày', price: 90000 },
+                    { label: '30 Ngày', price: 220000 },
+                    { label: 'Vĩnh viễn', price: 550000 }
+                ]
+            },
+            {
+                id: 'prod_fluorite',
+                name: 'Fluorite FF iOS',
+                category: 'Menu IOS',
+                baseStock: 486,
+                logoStyle: 'fluorite',
+                features: [
+                    'Aimbot, ESP, Antiban 24/7',
+                    'Tối ưu 120FPS mượt mà mọi dòng iPhone',
+                    'Hỗ trợ iOS 15.0 đến iOS 18.3 mới nhất'
+                ],
+                tiers: [
+                    { label: '1 Ngày', price: 35000 },
+                    { label: '7 Ngày', price: 130000 },
+                    { label: '30 Ngày', price: 320000 },
+                    { label: 'Vĩnh viễn', price: 790000 }
+                ]
+            },
+            {
+                id: 'prod_cerberus',
+                name: 'Cerberus Menu Android',
+                category: 'Menu Android',
+                baseStock: 695,
+                logoStyle: 'cerberus',
+                features: [
+                    'Hỗ trợ Android 10 - 15 (No-Root & Root)',
+                    'AimLock 360°, Đạn thẳng, ESP Full',
+                    'Đăng nhập Google/FB an toàn acc chính'
+                ],
+                tiers: [
+                    { label: '1 Ngày', price: 20000 },
+                    { label: '7 Ngày', price: 75000 },
+                    { label: '30 Ngày', price: 180000 },
+                    { label: 'Vĩnh viễn', price: 450000 }
+                ]
+            },
+            {
+                id: 'prod_nexus',
+                name: 'Nexus Proxy DNS',
+                category: 'PROXY IOS',
+                baseStock: 940,
+                logoStyle: 'nexus',
+                features: [
+                    'Chặn log báo cáo gửi về máy chủ',
+                    'Ping ổn định 18ms - 25ms siêu mượt',
+                    'Cài đặt 1 chạm qua tệp .mobileconfig'
+                ],
+                tiers: [
+                    { label: '1 Ngày', price: 15000 },
+                    { label: '7 Ngày', price: 50000 },
+                    { label: '30 Ngày', price: 120000 },
+                    { label: 'Vĩnh viễn', price: 300000 }
+                ]
+            }
+        ];
+
+        const initialUsers = [
+            {
+                id: 'u_admin',
+                name: 'Nam',
+                email: 'admin@keyvn.site',
+                password: 'admin123',
+                role: 'Admin / Seller',
+                balance: 500000,
+                joinedAt: '07/10/2026 19:27'
+            },
+            {
+                id: 'u_member',
+                name: 'Thành Viên VIP',
+                email: 'user@keyvn.site',
+                password: '123456',
+                role: 'Member',
+                balance: 150000,
+                joinedAt: '08/10/2026 10:15'
+            }
+        ];
+
+        const initialKeys = [
+            { id: 'k1', code: 'KEYVN-FF-8841-9021', productId: 'prod_astra', tier: '30 Ngày', hwid: '', status: 'available', buyer: '', date: '07/10/2026' },
+            { id: 'k2', code: 'KEYVN-FF-3319-7740', productId: 'prod_astra', tier: '7 Ngày', hwid: '', status: 'available', buyer: '', date: '07/10/2026' },
+            { id: 'k3', code: 'KEYVN-FF-5520-1189', productId: 'prod_astra', tier: '1 Ngày', hwid: '', status: 'available', buyer: '', date: '07/10/2026' },
+            { id: 'k4', code: 'KEYVN-FF-9910-4421', productId: 'prod_fluorite', tier: '30 Ngày', hwid: '', status: 'available', buyer: '', date: '07/10/2026' },
+            { id: 'k5', code: 'KEYVN-FF-7721-6034', productId: 'prod_cerberus', tier: '7 Ngày', hwid: '', status: 'available', buyer: '', date: '07/10/2026' }
+        ];
+
+        const initialDeposits = [
+            { id: 'DEP-101', userEmail: 'admin@keyvn.site', method: 'Bank VietQR (MBBank)', detail: 'KEYVN NAP NAM', netAmount: 500000, status: 'success', date: '07/10/2026 19:30' },
+            { id: 'DEP-102', userEmail: 'user@keyvn.site', method: 'Thẻ Viettel', detail: 'Seri: 100084920192 | PIN: 849201928371', netAmount: 42500, status: 'pending', date: '08/10/2026 11:05' }
+        ];
+
+        const initialNotifs = [
+            { id: 'n1', title: 'Astra Cheat IPA v2.14 hỗ trợ từ iOS 16 - 27.x', desc: 'Đã cập nhật phiên bản mới nhất chống quét, leo rank an toàn 24/7.', time: '2 phút trước', unread: true },
+            { id: 'n2', title: 'Nạp VietQR MBBank & Thẻ Cào Auto 24/7', desc: 'Hệ thống gạch thẻ tự động chiết khấu ưu đãi, cộng tiền sau 3 giây.', time: '35 phút trước', unread: true }
+        ];
+
+        let siteConfig = JSON.parse(localStorage.getItem(STORAGE.CONFIG)) || initialConfig;
+        let products = JSON.parse(localStorage.getItem(STORAGE.PRODUCTS)) || initialProducts;
+        let licenses = JSON.parse(localStorage.getItem(STORAGE.KEYS)) || initialKeys;
+        let users = JSON.parse(localStorage.getItem(STORAGE.USERS)) || initialUsers;
+        let currentUserEmail = localStorage.getItem(STORAGE.CURRENT_USER);
+        if (currentUserEmail === null) {
+            currentUserEmail = 'admin@keyvn.site'; // Mặc định đăng nhập Admin mẫu để trải nghiệm ngay
+            localStorage.setItem(STORAGE.CURRENT_USER, currentUserEmail);
+        }
+        let deposits = JSON.parse(localStorage.getItem(STORAGE.DEPOSITS)) || initialDeposits;
+        let cart = JSON.parse(localStorage.getItem(STORAGE.CART)) || [];
+        let notifs = JSON.parse(localStorage.getItem(STORAGE.NOTIFS)) || initialNotifs;
+
+        const selectedTierMap = {};
+        products.forEach(p => { selectedTierMap[p.id] = 0; });
+
+        let marketFilterCat = 'ALL';
+        let marketSearchTerm = '';
+
+        function getCurrentUser() {
+            if (!currentUserEmail) return null;
+            return users.find(u => u.email === currentUserEmail) || null;
+        }
+
+        function saveAllState() {
+            localStorage.setItem(STORAGE.CONFIG, JSON.stringify(siteConfig));
+            localStorage.setItem(STORAGE.PRODUCTS, JSON.stringify(products));
+            localStorage.setItem(STORAGE.KEYS, JSON.stringify(licenses));
+            localStorage.setItem(STORAGE.USERS, JSON.stringify(users));
+            localStorage.setItem(STORAGE.CURRENT_USER, currentUserEmail || '');
+            localStorage.setItem(STORAGE.DEPOSITS, JSON.stringify(deposits));
+            localStorage.setItem(STORAGE.CART, JSON.stringify(cart));
+            localStorage.setItem(STORAGE.NOTIFS, JSON.stringify(notifs));
+        }
+
+        function formatVND(val) {
+            return Number(val || 0).toLocaleString('vi-VN') + 'đ';
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('kv-toast');
+            document.getElementById('kv-toast-text').textContent = msg;
+            box.classList.remove('-translate-y-24', 'opacity-0');
+            setTimeout(() => box.classList.add('-translate-y-24', 'opacity-0'), 3000);
+        }
+
+        function copyText(text, label = 'Đã sao chép') {
+            const temp = document.createElement('input');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast(`${label}: ${text}`);
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        /* ---------------------------------------------------
+           ĐIỀU HƯỚNG HASH ROUTING (#/products) & DRAWER
+        --------------------------------------------------- */
+        document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        function openDrawer() {
+            const drawer = document.getElementById('right-drawer');
+            const backdrop = document.getElementById('drawer-backdrop');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function closeDrawer() {
+            const drawer = document.getElementById('right-drawer');
+            const backdrop = document.getElementById('drawer-backdrop');
+            backdrop.classList.add('opacity-0');
+            drawer.classList.add('translate-x-full');
+            setTimeout(() => backdrop.classList.add('hidden'), 300);
+        }
+
+        function navigateTo(viewId, updateHash = true) {
+            const user = getCurrentUser();
+            if ((viewId === 'profile' || viewId === 'deposit' || viewId === 'admin') && !user) {
+                viewId = 'auth';
+                showToast('Vui lòng đăng nhập tài khoản để tiếp tục!');
+            }
+            if (viewId === 'admin' && user && !user.role.includes('Admin')) {
+                viewId = 'products';
+                showToast('Chỉ tài khoản Quản trị viên Admin mới có quyền truy cập!');
+            }
+
+            document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) target.classList.remove('hidden');
+
+            if (updateHash) {
+                window.location.hash = `#/${viewId}`;
+            }
+
+            document.querySelectorAll('.bottom-nav-btn').forEach(btn => {
+                const active = btn.getAttribute('data-bnav') === viewId;
+                btn.className = active
+                    ? 'bottom-nav-btn flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-2xl text-kv-cyan transition-all'
+                    : 'bottom-nav-btn relative flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-2xl text-slate-500 dark:text-slate-300 hover:text-kv-cyan transition-all';
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderAll();
+        }
+
+        function handleAvatarClick() {
+            const user = getCurrentUser();
+            navigateTo(user ? 'profile' : 'auth');
+        }
+
+        function handleDrawerAuthAction() {
+            const user = getCurrentUser();
+            closeDrawer();
+            if (user) {
+                currentUserEmail = '';
+                saveAllState();
+                showToast('Đã đăng xuất khỏi hệ thống!');
+                navigateTo('auth');
+            } else {
+                navigateTo('auth');
+            }
+        }
+
+        /* ---------------------------------------------------
+           ĐĂNG NHẬP & ĐĂNG KÝ THÀNH VIÊN 24/7
+        --------------------------------------------------- */
+        function setAuthMode(mode) {
+            const isLogin = mode === 'login';
+            document.getElementById('login-form').classList.toggle('hidden', !isLogin);
+            document.getElementById('register-form').classList.toggle('hidden', isLogin);
+            document.getElementById('auth-form-title').textContent = isLogin ? 'Đăng nhập tài khoản KEYVN' : 'Đăng ký thành viên mới 24/7';
+            document.getElementById('auth-tab-login').className = isLogin ? 'py-2 rounded-full text-xs font-bold bg-kv-cyan text-slate-950' : 'py-2 rounded-full text-xs font-semibold text-kv-muted';
+            document.getElementById('auth-tab-register').className = !isLogin ? 'py-2 rounded-full text-xs font-bold bg-kv-cyan text-slate-950' : 'py-2 rounded-full text-xs font-semibold text-kv-muted';
+        }
+
+        function handleUserLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const pass = document.getElementById('login-password').value;
+            const found = users.find(u => u.email.toLowerCase() === email && u.password === pass);
+            if (!found) {
+                showToast('Sai Email hoặc Mật khẩu!');
+                return;
+            }
+            currentUserEmail = found.email;
+            saveAllState();
+            showToast(`Chào mừng ${found.name} quay trở lại!`);
+            navigateTo('products');
+        }
+
+        function handleUserRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
+
+            if (users.some(u => u.email.toLowerCase() === email)) {
+                showToast('Email này đã tồn tại trên hệ thống!');
+                return;
+            }
+
+            const nowStr = new Date().toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+            const newUser = {
+                id: 'u_' + Date.now(),
+                name,
+                email,
+                password,
+                role: 'Member',
+                balance: 0,
+                joinedAt: nowStr
+            };
+            users.push(newUser);
+            currentUserEmail = newUser.email;
+            saveAllState();
+            showToast('Đăng ký thành công! Chào mừng bạn đến với KEYVN.');
+            navigateTo('products');
+        }
+
+        /* ---------------------------------------------------
+           HIỂN THỊ THẺ SẢN PHẨM (#/products)
+        --------------------------------------------------- */
+        function buildProductCard(prod) {
+            const availKeysCount = licenses.filter(k => k.productId === prod.id && k.status === 'available').length;
+            const displayStock = Number(prod.baseStock || 0) + availKeysCount;
+            const activeTierIdx = selectedTierMap[prod.id] || 0;
+            const currentTier = prod.tiers[activeTierIdx] || prod.tiers[0];
+
+            let bannerHTML = '';
+            if (prod.logoStyle === 'astra-k') {
+                bannerHTML = `
+                    <div class="w-full h-44 bg-white rounded-2xl flex items-center justify-center overflow-hidden">
+                        <svg viewBox="0 0 200 160" class="w-36 h-36">
+                            <polygon points="45,15 72,32 72,145 45,145" fill="#070d14"/>
+                            <polygon points="78,76 145,20 112,78 148,145 112,145 78,88" fill="#070d14"/>
+                            <polygon points="118,86 155,70 155,145 135,145" fill="#070d14"/>
+                        </svg>
+                    </div>
+                `;
+            } else {
+                const gradients = {
+                    fluorite: 'from-sky-500/25 via-[#0b1b2e] to-[#070d14] text-kv-cyan',
+                    cerberus: 'from-emerald-500/25 via-[#0a201c] to-[#070d14] text-emerald-400',
+                    nexus: 'from-indigo-500/25 via-[#10182e] to-[#070d14] text-sky-400'
+                };
+                const g = gradients[prod.logoStyle] || gradients.fluorite;
+                bannerHTML = `
+                    <div class="w-full h-44 bg-gradient-to-br ${g} border border-kv-border rounded-2xl flex flex-col items-center justify-center">
+                        <span class="text-5xl font-black tracking-tighter">${prod.name.charAt(0).toUpperCase()}</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest opacity-75 mt-1">${prod.category}</span>
+                    </div>
+                `;
+            }
+
+            const featuresHTML = (prod.features || []).map(f => `
+                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                    <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 stroke-[2.8]"></i>
+                    <span>${f}</span>
+                </div>
+            `).join('');
+
+            const tiersHTML = prod.tiers.map((t, idx) => {
+                const isSelected = idx === activeTierIdx;
+                return `
+                    <button type="button" onclick="selectCardTier('${prod.id}', ${idx})" class="py-2 px-2 rounded-xl border text-center transition-all ${isSelected ? 'border-kv-cyan bg-kv-cyan/15 text-white kv-pill-active' : 'border-slate-200 dark:border-kv-border bg-slate-50 dark:bg-[#08101a] text-kv-muted hover:border-kv-cyan/50'}">
+                        <span class="block text-[11px] font-semibold">${t.label}</span>
+                        <span class="block text-xs font-extrabold text-kv-cyan mt-0.5">${formatVND(t.price)}</span>
+                    </button>
+                `;
+            }).join('');
+
+            return `
+                <article class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border hover:border-kv-cyan/60 rounded-3xl p-4 sm:p-5 space-y-4 transition-all shadow-lg">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="px-3 py-1 rounded-lg border border-kv-cyan/40 bg-kv-cyan/10 text-[11px] font-bold tracking-wider text-kv-cyan uppercase">
+                            ${prod.category}
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-[11px] font-semibold text-emerald-400">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span>Sẵn hàng (${displayStock})</span>
+                        </span>
+                    </div>
+
+                    ${bannerHTML}
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">${prod.name}</h3>
+                            <span class="text-base sm:text-lg font-black text-kv-cyan">${formatVND(currentTier.price)}</span>
+                        </div>
+                        <div class="space-y-1.5">${featuresHTML}</div>
+                    </div>
+
+                    <div class="space-y-1.5 pt-1">
+                        <p class="text-[11px] font-semibold text-kv-muted">Chọn gói thời hạn:</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">${tiersHTML}</div>
+                    </div>
+
+                    <div class="pt-1 flex items-center gap-2.5">
+                        <button type="button" onclick="buyProductInstant('${prod.id}')" class="flex-1 py-3 px-4 rounded-full bg-kv-cyan hover:bg-kv-cyanDark text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-kv-cyan/25 transition-all">
+                            <i data-lucide="zap" class="w-4 h-4 fill-slate-950"></i>
+                            <span>Mua ngay</span>
+                        </button>
+                        <button type="button" onclick="addProductToCart('${prod.id}')" class="py-3 px-4 rounded-full bg-slate-100 dark:bg-[#131f30] border border-slate-200 dark:border-kv-border hover:border-kv-cyan text-xs font-bold text-slate-800 dark:text-kv-cyan flex items-center justify-center gap-1.5 transition-colors">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            <span>Thêm giỏ</span>
+                        </button>
+                    </div>
+                </article>
+            `;
+        }
+
+        function selectCardTier(prodId, tierIdx) {
+            selectedTierMap[prodId] = tierIdx;
+            renderMarketProducts();
+            lucide.createIcons();
+        }
+
+        function renderMarketProducts() {
+            const list = products.filter(p => {
+                const matchCat = marketFilterCat === 'ALL' || p.category === marketFilterCat;
+                const matchSearch = !marketSearchTerm || p.name.toLowerCase().includes(marketSearchTerm.toLowerCase()) || p.category.toLowerCase().includes(marketSearchTerm.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            const html = list.length
+                ? list.map(p => buildProductCard(p)).join('')
+                : `<div class="col-span-full py-10 text-center text-xs text-kv-muted bg-white dark:bg-kv-card rounded-3xl border border-kv-border">Không tìm thấy sản phẩm nào phù hợp.</div>`;
+
+            document.getElementById('market-products-grid').innerHTML = html;
+            document.getElementById('home-featured-grid').innerHTML = products.slice(0, 2).map(p => buildProductCard(p)).join('');
+        }
+
+        function filterMarketCategory(cat) {
+            marketFilterCat = cat;
+            document.querySelectorAll('.market-cat-btn').forEach(btn => {
+                const active = btn.getAttribute('data-mcat') === cat;
+                btn.className = active
+                    ? 'market-cat-btn w-full py-3.5 px-4 rounded-full text-sm font-semibold bg-white dark:bg-kv-card text-kv-cyan border border-kv-cyan kv-pill-active transition-all'
+                    : 'market-cat-btn w-full py-3.5 px-4 rounded-full text-sm font-medium bg-white dark:bg-kv-card text-slate-700 dark:text-kv-muted border border-slate-200 dark:border-kv-border hover:border-kv-cyan/60 transition-all';
+            });
+            renderMarketProducts();
+            lucide.createIcons();
+        }
+
+        function liveMarketSearch(val) {
+            marketSearchTerm = val.trim();
+            renderMarketProducts();
+            lucide.createIcons();
+        }
+
+        function handleMarketSearch(e) {
+            e.preventDefault();
+            marketSearchTerm = document.getElementById('market-search-input').value.trim();
+            renderMarketProducts();
+            lucide.createIcons();
+        }
+
+        function handleHomeToMarketSearch(e) {
+            e.preventDefault();
+            const q = document.getElementById('home-search-input').value.trim();
+            document.getElementById('market-search-input').value = q;
+            marketSearchTerm = q;
+            navigateTo('products');
+        }
+
+        /* ---------------------------------------------------
+           MUA KEY TỰ ĐỘNG 24/7 & GIỎ HÀNG
+        --------------------------------------------------- */
+        function generateRandomFFKey() {
+            const r4 = () => Math.floor(1000 + Math.random() * 9000);
+            return `KEYVN-FF-${r4()}-${r4()}`;
+        }
+
+        function issueLicenseKey(prod, tier, buyerEmail) {
+            let keyRecord = licenses.find(k => k.productId === prod.id && k.status === 'available' && k.tier === tier.label)
+                         || licenses.find(k => k.productId === prod.id && k.status === 'available');
+
+            const nowStr = new Date().toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            if (keyRecord) {
+                keyRecord.status = 'active';
+                keyRecord.tier = tier.label;
+                keyRecord.buyer = buyerEmail;
+                keyRecord.date = nowStr;
+            } else {
+                keyRecord = {
+                    id: 'k_' + Date.now() + Math.random().toString(36).slice(2, 5),
+                    code: generateRandomFFKey(),
+                    productId: prod.id,
+                    tier: tier.label,
+                    hwid: '',
+                    status: 'active',
+                    buyer: buyerEmail,
+                    date: nowStr
+                };
+                licenses.unshift(keyRecord);
+            }
+
+            if (prod.baseStock > 0) prod.baseStock -= 1;
+            return keyRecord.code;
+        }
+
+        function buyProductInstant(prodId) {
+            const user = getCurrentUser();
+            if (!user) {
+                showToast('Vui lòng đăng nhập để mua Key tự động!');
+                navigateTo('auth');
+                return;
+            }
+            const prod = products.find(p => p.id === prodId);
+            if (!prod) return;
+            const tier = prod.tiers[selectedTierMap[prod.id] || 0];
+
+            if (user.balance < tier.price) {
+                showToast(`Số dư ví không đủ (${formatVND(tier.price)}). Vui lòng nạp tiền!`);
+                navigateTo('deposit');
+                return;
+            }
+
+            user.balance -= tier.price;
+            const newCode = issueLicenseKey(prod, tier, user.email);
+            saveAllState();
+            renderAll();
+            copyText(newCode, 'Giao Key 3s thành công! Đã copy');
+            navigateTo('downloads');
+            setDownloadTab('history');
+        }
+
+        function addProductToCart(prodId) {
+            const prod = products.find(p => p.id === prodId);
+            if (!prod) return;
+            const tier = prod.tiers[selectedTierMap[prod.id] || 0];
+            cart.push({ productId: prod.id, productName: prod.name, tierLabel: tier.label, price: tier.price });
+            saveAllState();
+            updateGlobalBadges();
+            showToast(`Đã thêm ${prod.name} (${tier.label}) vào giỏ!`);
+        }
+
+        function openCartModal() {
+            const user = getCurrentUser();
+            document.getElementById('cart-user-bal').textContent = formatVND(user ? user.balance : 0);
+            const total = cart.reduce((s, item) => s + item.price, 0);
+            document.getElementById('cart-total-price').textContent = formatVND(total);
+
+            const container = document.getElementById('cart-items-list');
+            container.innerHTML = cart.length === 0
+                ? `<p class="text-center text-xs text-kv-muted py-6">Giỏ hàng của bạn đang trống.</p>`
+                : cart.map((item, idx) => `
+                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-[#08101a] border border-slate-200 dark:border-kv-border flex items-center justify-between gap-2">
+                        <div>
+                            <p class="text-xs font-bold">${item.productName}</p>
+                            <p class="text-[11px] text-kv-cyan font-semibold">Gói: ${item.tierLabel} • ${formatVND(item.price)}</p>
+                        </div>
+                        <button onclick="removeCartItem(${idx})" class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-500/10">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `).join('');
+            openModal('cart-modal');
+            lucide.createIcons();
+        }
+
+        function removeCartItem(idx) {
+            cart.splice(idx, 1);
+            saveAllState();
+            updateGlobalBadges();
+            openCartModal();
+        }
+
+        function checkoutCartItems() {
+            const user = getCurrentUser();
+            if (!user) {
+                closeModal('cart-modal');
+                navigateTo('auth');
+                return;
+            }
+            if (cart.length === 0) return;
+            const total = cart.reduce((s, item) => s + item.price, 0);
+            if (user.balance < total) {
+                closeModal('cart-modal');
+                showToast('Số dư ví không đủ! Vui lòng nạp tiền.');
+                navigateTo('deposit');
+                return;
+            }
+            user.balance -= total;
+            cart.forEach(item => {
+                const prod = products.find(p => p.id === item.productId) || products[0];
+                issueLicenseKey(prod, { label: item.tierLabel, price: item.price }, user.email);
+            });
+            cart = [];
+            saveAllState();
+            closeModal('cart-modal');
+            renderAll();
+            showToast('Thanh toán thành công! Key đã được giao vào mục Tải xuống.');
+            navigateTo('downloads');
+            setDownloadTab('history');
+        }
+
+        /* ---------------------------------------------------
+           CỔNG NẠP TIỀN 24/7 (VIETQR + THẺ CÀO TỰ ĐỘNG)
+        --------------------------------------------------- */
+        function switchDepositMethod(method) {
+            const isBank = method === 'bank';
+            document.getElementById('deposit-panel-bank').classList.toggle('hidden', !isBank);
+            document.getElementById('deposit-panel-card').classList.toggle('hidden', isBank);
+            document.getElementById('dep-tab-bank').className = isBank
+                ? 'py-3 px-4 rounded-full text-xs sm:text-sm font-bold bg-kv-cyan text-slate-950 flex items-center justify-center gap-2 transition-all shadow'
+                : 'py-3 px-4 rounded-full text-xs sm:text-sm font-semibold text-slate-600 dark:text-kv-muted hover:text-kv-cyan flex items-center justify-center gap-2 transition-all';
+            document.getElementById('dep-tab-card').className = !isBank
+                ? 'py-3 px-4 rounded-full text-xs sm:text-sm font-bold bg-kv-cyan text-slate-950 flex items-center justify-center gap-2 transition-all shadow'
+                : 'py-3 px-4 rounded-full text-xs sm:text-sm font-semibold text-slate-600 dark:text-kv-muted hover:text-kv-cyan flex items-center justify-center gap-2 transition-all';
+        }
+
+        function getTransferMemo() {
+            const user = getCurrentUser();
+            const cleanName = (user?.name || 'KHACH').toUpperCase().replace(/[^A-Z0-9]/g, '');
+            return `KEYVN NAP ${cleanName}`;
+        }
+
+        function selectQuickBankAmount(val) {
+            document.getElementById('bank-deposit-amount').value = val;
+            updateVietQRPreview();
+        }
+
+        function updateVietQRPreview() {
+            const bankCode = siteConfig.bankCode || 'MB';
+            const bankLabel = BANK_NAMES[bankCode] || bankCode;
+            const amount = Math.max(10000, Number(document.getElementById('bank-deposit-amount').value || 100000));
+            const memo = getTransferMemo();
+
+            document.getElementById('display-bank-badge').value = bankLabel;
+            document.getElementById('display-bank-name').textContent = bankLabel;
+            document.getElementById('display-bank-acc').textContent = siteConfig.bankAccount;
+            document.getElementById('display-bank-owner').textContent = siteConfig.bankOwner;
+            document.getElementById('display-bank-memo').textContent = memo;
+
+            const qrUrl = `https://img.vietqr.io/image/${bankCode}-${siteConfig.bankAccount}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(siteConfig.bankOwner)}`;
+            document.getElementById('vietqr-image').src = qrUrl;
+        }
+
+        function simulateAutoBankDeposit() {
+            const user = getCurrentUser();
+            if (!user) return;
+            const btn = document.getElementById('btn-confirm-bank-auto');
+            const amount = Math.max(10000, Number(document.getElementById('bank-deposit-amount').value || 100000));
+            const bankLabel = BANK_NAMES[siteConfig.bankCode] || siteConfig.bankCode;
+            const memo = getTransferMemo();
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Đang kiểm tra giao dịch Auto 24/7...</span>`;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                const nowStr = new Date().toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+                user.balance += amount;
+                deposits.unshift({
+                    id: 'BANK-' + Math.floor(1000 + Math.random() * 9000),
+                    userEmail: user.email,
+                    method: `Bank VietQR (${bankLabel})`,
+                    detail: memo,
+                    netAmount: amount,
+                    status: 'success',
+                    date: nowStr
+                });
+
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="zap" class="w-4 h-4 fill-slate-950"></i><span>Xác nhận đã chuyển khoản (Auto 24/7)</span>`;
+                saveAllState();
+                renderAll();
+                showToast(`Hệ thống Auto 24/7 đã cộng +${formatVND(amount)} vào ví!`);
+            }, 1800);
+        }
+
+        function updateCardNetReceive() {
+            const faceVal = Number(document.getElementById('card-amount-select').value || 50000);
+            const rate = Number(siteConfig.cardRate || 85);
+            const net = Math.floor((faceVal * rate) / 100);
+            document.getElementById('card-rate-badge').textContent = `${rate}%`;
+            document.getElementById('card-net-receive-display').textContent = formatVND(net);
+        }
+
+        function handleCardDepositSubmit(e) {
+            e.preventDefault();
+            const user = getCurrentUser();
+            if (!user) return;
+            const telco = document.getElementById('card-telco-select').value;
+            const faceVal = Number(document.getElementById('card-amount-select').value);
+            const serial = document.getElementById('card-serial-input').value.trim();
+            const code = document.getElementById('card-code-input').value.trim();
+            const rate = Number(siteConfig.cardRate || 85);
+            const netAmount = Math.floor((faceVal * rate) / 100);
+            const nowStr = new Date().toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            const depRecord = {
+                id: 'CARD-' + Math.floor(1000 + Math.random() * 9000),
+                userEmail: user.email,
+                method: `Thẻ ${telco} (${formatVND(faceVal)})`,
+                detail: `Seri: ${serial} | PIN: ${code}`,
+                netAmount: netAmount,
+                status: 'pending',
+                date: nowStr
+            };
+
+            deposits.unshift(depRecord);
+            document.getElementById('card-serial-input').value = '';
+            document.getElementById('card-code-input').value = '';
+            saveAllState();
+            renderAll();
+            showToast('Đang gạch thẻ tự động 24/7...');
+
+            setTimeout(() => {
+                if (depRecord.status === 'pending') {
+                    depRecord.status = 'success';
+                    user.balance += depRecord.netAmount;
+                    saveAllState();
+                    renderAll();
+                    showToast(`Thẻ ${telco} hợp lệ! Đã cộng +${formatVND(netAmount)} vào ví.`);
+                }
+            }, 2200);
+        }
+
+        function renderUserDepositHistory() {
+            const user = getCurrentUser();
+            const tbody = document.getElementById('user-deposit-history-tbody');
+            const badges = {
+                pending: '<span class="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-semibold">Đang xử lý</span>',
+                success: '<span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-semibold">Thành công</span>',
+                rejected: '<span class="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 font-semibold">Từ chối</span>'
+            };
+            const list = user ? deposits.filter(d => d.userEmail === user.email) : [];
+            tbody.innerHTML = list.length ? list.map(d => `
+                <tr>
+                    <td class="py-3 px-4 font-bold">${d.method}</td>
+                    <td class="py-3 px-4 font-mono text-[11px] text-kv-muted max-w-[180px] truncate">${d.detail}</td>
+                    <td class="py-3 px-4 font-bold text-kv-cyan">+${formatVND(d.netAmount)}</td>
+                    <td class="py-3 px-4">${badges[d.status] || badges.pending}</td>
+                    <td class="py-3 px-4 text-kv-muted">${d.date}</td>
+                </tr>
+            `).join('') : `<tr><td colspan="5" class="py-6 text-center text-kv-muted">Chưa có giao dịch nạp tiền nào.</td></tr>`;
+        }
+
+        /* ---------------------------------------------------
+           DOWNLOADS & KEY ĐÃ MUA
+        --------------------------------------------------- */
+        function setDownloadTab(tab) {
+            const isFiles = tab === 'files';
+            document.getElementById('dl-panel-files').classList.toggle('hidden', !isFiles);
+            document.getElementById('dl-panel-history').classList.toggle('hidden', isFiles);
+            document.getElementById('dl-tab-files').className = isFiles ? 'py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-kv-cyan text-slate-950 transition-all' : 'py-2.5 px-4 rounded-full text-xs sm:text-sm font-semibold text-kv-muted';
+            document.getElementById('dl-tab-history').className = !isFiles ? 'py-2.5 px-4 rounded-full text-xs sm:text-sm font-bold bg-kv-cyan text-slate-950 transition-all' : 'py-2.5 px-4 rounded-full text-xs sm:text-sm font-semibold text-kv-muted';
+        }
+
+        function renderPurchasedKeys() {
+            const user = getCurrentUser();
+            const myKeys = user ? licenses.filter(k => k.buyer === user.email && k.status === 'active') : [];
+            document.getElementById('purchased-count-badge').textContent = myKeys.length;
+            const container = document.getElementById('purchased-keys-container');
+
+            container.innerHTML = myKeys.length ? myKeys.map(k => {
+                const prod = products.find(p => p.id === k.productId) || products[0];
+                return `
+                    <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-kv-cyan/15 text-kv-cyan text-[10px] font-bold uppercase">${prod.category}</span>
+                                <span class="text-xs font-bold">${prod.name} • Gói ${k.tier}</span>
+                            </div>
+                            <div class="flex items-center gap-2 pt-1">
+                                <code class="font-mono text-xs sm:text-sm font-bold text-kv-cyan bg-slate-100 dark:bg-[#070d14] px-3 py-1 rounded-lg border border-kv-border">${k.code}</code>
+                                <button onclick="copyText('${k.code}', 'Đã copy Key')" class="px-3 py-1 rounded-lg bg-kv-cyan text-slate-950 font-bold text-xs">Copy Key</button>
+                            </div>
+                        </div>
+                        <div class="text-[11px] text-kv-muted sm:text-right">
+                            <p>Ngày mua: ${k.date}</p>
+                            <p>HWID: ${k.hwid || 'Tự động gắn khi đăng nhập App'}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('') : `<div class="p-8 text-center rounded-3xl bg-white dark:bg-kv-card border border-kv-border text-xs text-kv-muted">Bạn chưa mua key nào. Hãy chọn gói tại Danh mục sản phẩm!</div>`;
+        }
+
+        function triggerFileDownload(fileName) {
+            const blob = new Blob([`KEYVN ENTERPRISE 24/7\nFile: ${fileName}`], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`Đang tải xuống ${fileName}...`);
+        }
+
+        /* ---------------------------------------------------
+           ADMIN COCKPIT 24/7
+        --------------------------------------------------- */
+        function setAdminTab(tabName) {
+            document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`admin-panel-${tabName}`)?.classList.remove('hidden');
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                const active = btn.getAttribute('data-atab') === tabName;
+                btn.className = active
+                    ? 'admin-tab-btn px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-kv-cyan text-slate-950 whitespace-nowrap'
+                    : 'admin-tab-btn px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-white dark:bg-kv-card text-kv-muted border border-slate-200 dark:border-kv-border whitespace-nowrap';
+            });
+            renderAdminDashboard();
+            lucide.createIcons();
+        }
+
+        function renderAdminDashboard() {
+            const pendingDeps = deposits.filter(d => d.status === 'pending');
+            document.getElementById('admin-pending-count').textContent = pendingDeps.length;
+            document.getElementById('admin-users-count').textContent = users.length;
+
+            document.getElementById('bulk-key-product').innerHTML = products.map(p => `<option value="${p.id}">${p.name} (${p.category})</option>`).join('');
+
+            // Bảng Kho Key
+            const statusMap = {
+                available: '<span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold">Sẵn kho</span>',
+                active: '<span class="px-2 py-0.5 rounded-full bg-kv-cyan/15 text-kv-cyan font-bold">Đã bán</span>',
+                banned: '<span class="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 font-bold">Đã khóa</span>'
+            };
+            document.getElementById('adm-keys-tbody').innerHTML = licenses.map(k => {
+                const prod = products.find(p => p.id === k.productId);
+                return `
+                    <tr>
+                        <td class="py-3 px-4 font-mono font-bold">${k.code}</td>
+                        <td class="py-3 px-4">${prod ? prod.name : 'Gói FF'} (${k.tier})</td>
+                        <td class="py-3 px-4 font-mono text-[11px] text-kv-muted">${k.buyer || k.hwid || 'Chưa kích hoạt'}</td>
+                        <td class="py-3 px-4">${statusMap[k.status] || statusMap.available}</td>
+                        <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
+                            <button onclick="adminResetHwid('${k.id}')" class="px-2 py-1 rounded bg-amber-500/15 text-amber-400">Reset HWID</button>
+                            <button onclick="adminToggleKeyBan('${k.id}')" class="px-2 py-1 rounded bg-kv-cyan/15 text-kv-cyan">${k.status === 'banned' ? 'Mở' : 'Khóa'}</button>
+                            <button onclick="adminDeleteKey('${k.id}')" class="px-2 py-1 rounded bg-rose-500/15 text-rose-400">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Danh sách sản phẩm Admin
+            document.getElementById('adm-products-grid').innerHTML = products.map(p => `
+                <div class="bg-white dark:bg-kv-card border border-slate-200 dark:border-kv-border rounded-2xl p-4 flex items-center justify-between gap-3">
+                    <div>
+                        <span class="px-2 py-0.5 rounded bg-kv-cyan/15 text-kv-cyan text-[10px] font-bold uppercase">${p.category}</span>
+                        <h4 class="font-bold text-sm mt-1">${p.name} (Sẵn hàng: ${p.baseStock})</h4>
+                        <p class="text-xs text-kv-muted">1D: ${formatVND(p.tiers[0]?.price)} • 30D: ${formatVND(p.tiers[2]?.price)}</p>
+                    </div>
+                    <button onclick="openAdminProductModal('${p.id}')" class="px-3.5 py-2 rounded-xl bg-kv-cyan/15 text-kv-cyan text-xs font-bold">Sửa</button>
+                </div>
+            `).join('');
+
+            // Bảng duyệt nạp thẻ & bank
+            document.getElementById('adm-deposits-tbody').innerHTML = deposits.map(d => `
+                <tr>
+                    <td class="py-3 px-4 font-semibold">${d.userEmail}</td>
+                    <td class="py-3 px-4 font-mono text-[11px]">${d.method} • ${d.detail}</td>
+                    <td class="py-3 px-4 font-bold text-kv-cyan">+${formatVND(d.netAmount)}</td>
+                    <td class="py-3 px-4">${d.status === 'pending' ? '<span class="text-amber-400 font-bold">Chờ duyệt</span>' : '<span class="text-emerald-400 font-bold">Thành công</span>'}</td>
+                    <td class="py-3 px-4 text-right">
+                        ${d.status === 'pending' ? `<button onclick="adminApproveDeposit('${d.id}')" class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 font-bold">Duyệt</button>` : '—'}
+                    </td>
+                </tr>
+            `).join('');
+
+            // Bảng quản lý thành viên
+            document.getElementById('adm-members-tbody').innerHTML = users.map(u => `
+                <tr>
+                    <td class="py-3 px-4"><strong>${u.name}</strong><br><span class="text-kv-muted">${u.email}</span></td>
+                    <td class="py-3 px-4 font-semibold">${u.role}</td>
+                    <td class="py-3 px-4 font-bold text-kv-cyan">${formatVND(u.balance)}</td>
+                    <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
+                        <button onclick="adminChangeMemberBalance('${u.id}', 100000)" class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 font-bold">+100k</button>
+                        <button onclick="adminChangeMemberBalance('${u.id}', -50000)" class="px-2.5 py-1 rounded bg-rose-500/20 text-rose-400 font-bold">-50k</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Sync form ngân hàng Admin
+            document.getElementById('cfg-bank-code').value = siteConfig.bankCode;
+            document.getElementById('cfg-bank-acc').value = siteConfig.bankAccount;
+            document.getElementById('cfg-bank-owner').value = siteConfig.bankOwner;
+            document.getElementById('cfg-card-rate').value = siteConfig.cardRate;
+        }
+
+        function autoFill10RandomKeys() {
+            document.getElementById('bulk-key-textarea').value = Array.from({ length: 10 }, () => generateRandomFFKey()).join('\n');
+            showToast('Đã tự sinh 10 key ngẫu nhiên!');
+        }
+
+        function handleBulkImportKeys(e) {
+            e.preventDefault();
+            const prodId = document.getElementById('bulk-key-product').value;
+            const tier = document.getElementById('bulk-key-tier').value;
+            const lines = document.getElementById('bulk-key-textarea').value.split('\n').map(s => s.trim()).filter(Boolean);
+            if (!lines.length) return;
+            const nowStr = new Date().toLocaleDateString('vi-VN');
+            lines.forEach((code, idx) => {
+                licenses.unshift({ id: 'k_' + Date.now() + idx, code: code.toUpperCase(), productId: prodId, tier, hwid: '', status: 'available', buyer: '', date: nowStr });
+            });
+            document.getElementById('bulk-key-textarea').value = '';
+            saveAllState();
+            renderAll();
+            showToast(`Đã nạp ${lines.length} key vào kho!`);
+        }
+
+        function adminResetHwid(id) {
+            const k = licenses.find(x => x.id === id);
+            if (k) { k.hwid = ''; saveAllState(); renderAll(); showToast('Đã Reset HWID thành công!'); }
+        }
+
+        function adminToggleKeyBan(id) {
+            const k = licenses.find(x => x.id === id);
+            if (k) { k.status = k.status === 'banned' ? (k.buyer ? 'active' : 'available') : 'banned'; saveAllState(); renderAll(); }
+        }
+
+        function adminDeleteKey(id) {
+            licenses = licenses.filter(x => x.id !== id);
+            saveAllState();
+            renderAll();
+        }
+
+        function openAdminProductModal(prodId = null) {
+            if (prodId) {
+                const p = products.find(x => x.id === prodId);
+                document.getElementById('adm-prod-modal-title').textContent = 'Chỉnh Sửa Sản Phẩm';
+                document.getElementById('adm-prod-id').value = p.id;
+                document.getElementById('adm-prod-name').value = p.name;
+                document.getElementById('adm-prod-cat').value = p.category;
+                document.getElementById('adm-prod-stock').value = p.baseStock;
+                document.getElementById('adm-prod-p1').value = p.tiers[0]?.price || 25000;
+                document.getElementById('adm-prod-p7').value = p.tiers[1]?.price || 90000;
+                document.getElementById('adm-prod-p30').value = p.tiers[2]?.price || 220000;
+                document.getElementById('adm-prod-plife').value = p.tiers[3]?.price || 550000;
+                document.getElementById('adm-prod-features').value = (p.features || []).join('\n');
+            } else {
+                document.getElementById('adm-prod-modal-title').textContent = 'Thêm Sản Phẩm Mới';
+                document.getElementById('adm-prod-id').value = '';
+                document.getElementById('adm-prod-name').value = '';
+            }
+            openModal('admin-product-modal');
+        }
+
+        function saveAdminProductForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('adm-prod-id').value;
+            const name = document.getElementById('adm-prod-name').value.trim();
+            const category = document.getElementById('adm-prod-cat').value;
+            const baseStock = Number(document.getElementById('adm-prod-stock').value || 100);
+            const tiers = [
+                { label: '1 Ngày', price: Number(document.getElementById('adm-prod-p1').value) },
+                { label: '7 Ngày', price: Number(document.getElementById('adm-prod-p7').value) },
+                { label: '30 Ngày', price: Number(document.getElementById('adm-prod-p30').value) },
+                { label: 'Vĩnh viễn', price: Number(document.getElementById('adm-prod-plife').value) }
+            ];
+            const features = document.getElementById('adm-prod-features').value.split('\n').map(s => s.trim()).filter(Boolean);
+
+            if (id) {
+                const idx = products.findIndex(p => p.id === id);
+                if (idx !== -1) products[idx] = { ...products[idx], name, category, baseStock, tiers, features };
+            } else {
+                const newId = 'prod_' + Date.now();
+                products.unshift({ id: newId, name, category, baseStock, logoStyle: category === 'PROXY IOS' ? 'astra-k' : 'fluorite', features, tiers });
+                selectedTierMap[newId] = 0;
+            }
+            saveAllState();
+            closeModal('admin-product-modal');
+            renderAll();
+            showToast('Đã lưu sản phẩm thành công!');
+        }
+
+        function adminApproveDeposit(id) {
+            const dep = deposits.find(d => d.id === id);
+            if (!dep || dep.status !== 'pending') return;
+            dep.status = 'success';
+            const u = users.find(x => x.email === dep.userEmail);
+            if (u) u.balance += Number(dep.netAmount || 0);
+            saveAllState();
+            renderAll();
+            showToast('Đã duyệt giao dịch và cộng tiền cho thành viên!');
+        }
+
+        function adminChangeMemberBalance(uid, delta) {
+            const u = users.find(x => x.id === uid);
+            if (!u) return;
+            u.balance = Math.max(0, u.balance + delta);
+            saveAllState();
+            renderAll();
+            showToast(`Đã cập nhật số dư ví của ${u.name}!`);
+        }
+
+        function saveSiteConfiguration(e) {
+            e.preventDefault();
+            siteConfig.bankCode = document.getElementById('cfg-bank-code').value;
+            siteConfig.bankAccount = document.getElementById('cfg-bank-acc').value.trim();
+            siteConfig.bankOwner = document.getElementById('cfg-bank-owner').value.trim().toUpperCase();
+            siteConfig.cardRate = Math.min(100, Math.max(50, Number(document.getElementById('cfg-card-rate').value || 85)));
+            saveAllState();
+            renderAll();
+            showToast('Đã lưu thông tin ngân hàng của bạn & cập nhật mã VietQR!');
+        }
+
+        function resetAllDefaultData() {
+            Object.values(STORAGE).forEach(k => localStorage.removeItem(k));
+            location.reload();
+        }
+
+        /* ---------------------------------------------------
+           MODALS HỒ SƠ & PHỤ TRỢ
+        --------------------------------------------------- */
+        function openAccountInfoModal() {
+            const user = getCurrentUser();
+            if (!user) return;
+            document.getElementById('utility-modal-title').textContent = 'Thông tin tài khoản';
+            document.getElementById('utility-modal-body').innerHTML = `
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-kv-muted mb-1">Tên hiển thị:</label>
+                        <input type="text" id="edit-profile-name" value="${user.name}" class="w-full px-3.5 py-2.5 rounded-xl bg-[#08101a] border border-kv-border text-sm text-white">
+                    </div>
+                    <button onclick="saveProfileName()" class="w-full py-3 rounded-full bg-kv-cyan text-slate-950 font-extrabold text-sm">Cập nhật tên</button>
+                </div>
+            `;
+            openModal('utility-modal');
+        }
+
+        function saveProfileName() {
+            const user = getCurrentUser();
+            if (user) {
+                user.name = document.getElementById('edit-profile-name').value.trim() || user.name;
+                saveAllState();
+                closeModal('utility-modal');
+                renderAll();
+                showToast('Đã cập nhật tên hiển thị!');
+            }
+        }
+
+        function openSubshopModal() {
+            document.getElementById('utility-modal-title').textContent = 'Mở Shop Con (.keyvn.site)';
+            document.getElementById('utility-modal-body').innerHTML = `
+                <p class="text-xs text-kv-muted">Tạo website đại lý bán key tự động 24/7 đồng bộ kho key từ KEYVN.</p>
+                <div class="flex items-center rounded-xl bg-[#08101a] border border-kv-border overflow-hidden">
+                    <input type="text" id="subshop-slug" value="shopff" class="flex-1 px-3.5 py-2.5 bg-transparent text-sm text-white focus:outline-none">
+                    <span class="px-3 text-xs font-mono font-bold text-kv-cyan">.keyvn.site</span>
+                </div>
+                <button onclick="closeModal('utility-modal'); showToast('Đã kích hoạt tên miền Shop Con 24/7!');" class="w-full py-3 rounded-full bg-kv-cyan text-slate-950 font-extrabold text-sm">Kích hoạt ngay</button>
+            `;
+            openModal('utility-modal');
+        }
+
+        function openPasswordModal() {
+            document.getElementById('utility-modal-title').textContent = 'Đổi mật khẩu';
+            document.getElementById('utility-modal-body').innerHTML = `
+                <div class="space-y-3">
+                    <input type="password" id="new-user-pass" placeholder="Nhập mật khẩu mới..." class="w-full px-3.5 py-2.5 rounded-xl bg-[#08101a] border border-kv-border text-sm text-white">
+                    <button onclick="updateUserPassword()" class="w-full py-3 rounded-full bg-kv-cyan text-slate-950 font-extrabold text-sm">Lưu mật khẩu mới</button>
+                </div>
+            `;
+            openModal('utility-modal');
+        }
+
+        function updateUserPassword() {
+            const user = getCurrentUser();
+            const np = document.getElementById('new-user-pass').value;
+            if (user && np.length >= 4) {
+                user.password = np;
+                saveAllState();
+                closeModal('utility-modal');
+                showToast('Đổi mật khẩu thành công!');
+            }
+        }
+
+        function openGuideModal() {
+            document.getElementById('utility-modal-title').textContent = 'Hướng dẫn nạp tiền & Mua Key 24/7';
+            document.getElementById('utility-modal-body').innerHTML = `
+                <ol class="list-decimal list-inside space-y-2 text-xs text-slate-300 leading-relaxed">
+                    <li>Đăng nhập hoặc đăng ký tài khoản thành viên KEYVN.</li>
+                    <li>Chọn <strong>Nạp tiền ví</strong>, quét mã <strong>VietQR Ngân hàng</strong> hoặc nhập <strong>Thẻ cào</strong>.</li>
+                    <li>Chọn gói <strong>Astra Cheat / Fluorite / Cerberus</strong> tại Danh mục sản phẩm và bấm <strong>Mua ngay</strong> để nhận Key trong 3 giây.</li>
+                </ol>
+            `;
+            openModal('utility-modal');
+        }
+
+        function openSupportModal() {
+            document.getElementById('utility-modal-title').textContent = 'Liên hệ hỗ trợ 24/7';
+            document.getElementById('utility-modal-body').innerHTML = `
+                <div class="space-y-2.5 text-xs">
+                    <div class="p-3 rounded-xl bg-[#08101a] border border-kv-border flex justify-between">
+                        <span>Telegram Kỹ Thuật 24/7:</span>
+                        <span class="font-mono font-bold text-kv-cyan">@keyvn_support247</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-[#08101a] border border-kv-border flex justify-between">
+                        <span>Hotline / Zalo Admin:</span>
+                        <span class="font-mono font-bold text-emerald-400">${siteConfig.bankAccount}</span>
+                    </div>
+                </div>
+            `;
+            openModal('utility-modal');
+        }
+
+        function openApiModal() {
+            document.getElementById('utility-modal-title').textContent = 'Cổng API & ID Sản phẩm';
+            document.getElementById('utility-modal-body').innerHTML = `
+                <pre class="p-3 rounded-xl bg-[#08101a] border border-kv-border font-mono text-[11px] text-kv-cyan overflow-x-auto">POST https://keyvn.site/api/v1/verify-key
+{
+  "key": "KEYVN-FF-XXXX-XXXX",
+  "udid": "DEVICE_UUID"
+}</pre>
+            `;
+            openModal('utility-modal');
+        }
+
+        function renderNotifications() {
+            document.getElementById('notifications-list-container').innerHTML = notifs.map(n => `
+                <div class="p-4 rounded-2xl bg-white dark:bg-kv-card border ${n.unread ? 'border-kv-cyan/50' : 'border-slate-200 dark:border-kv-border'} space-y-1">
+                    <div class="flex items-center justify-between gap-2">
+                        <h3 class="text-sm font-bold">${n.title}</h3>
+                        <span class="text-[11px] text-kv-muted">${n.time}</span>
+                    </div>
+                    <p class="text-xs text-kv-muted">${n.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function markNotificationsRead() {
+            notifs.forEach(n => n.unread = false);
+            document.getElementById('bottom-notif-badge').textContent = '0';
+            document.getElementById('drawer-notif-badge').textContent = '0';
+            saveAllState();
+            renderNotifications();
+            showToast('Đã đánh dấu đọc tất cả thông báo!');
+        }
+
+        /* ---------------------------------------------------
+           ĐỒNG BỘ GIAO DIỆN & KHỞI CHẠY MẶC ĐỊNH #/products
+        --------------------------------------------------- */
+        function updateGlobalBadges() {
+            const cartBadge = document.getElementById('header-cart-badge');
+            if (cart.length > 0) {
+                cartBadge.textContent = cart.length;
+                cartBadge.classList.remove('hidden');
+            } else {
+                cartBadge.classList.add('hidden');
+            }
+            document.getElementById('drawer-cart-count').textContent = cart.length;
+
+            const user = getCurrentUser();
+            const isAdmin = user && user.role.includes('Admin');
+
+            document.getElementById('drawer-admin-btn').classList.toggle('hidden', !isAdmin);
+            document.getElementById('profile-admin-shortcut').classList.toggle('hidden', !isAdmin);
+
+            const authBtn = document.getElementById('drawer-auth-action-btn');
+            if (user) {
+                const initials = user.name.trim().slice(0, 2).toUpperCase();
+                document.getElementById('header-avatar-initials').textContent = initials === 'NA' ? 'NA' : initials;
+                document.getElementById('drawer-account-label').textContent = `${user.name} (${formatVND(user.balance)})`;
+                authBtn.className = 'w-full py-3 rounded-full border border-rose-500/50 bg-rose-500/5 hover:bg-rose-500/15 text-rose-400 text-sm font-semibold flex items-center justify-center gap-2 transition-colors';
+                authBtn.innerHTML = `<i data-lucide="log-out" class="w-4 h-4"></i><span>Đăng xuất</span>`;
+
+                document.getElementById('profile-display-name').textContent = user.name;
+                document.getElementById('profile-avatar-char').textContent = user.name.charAt(0).toUpperCase();
+                document.getElementById('profile-email-text').textContent = user.email;
+                document.getElementById('profile-wallet-balance').textContent = formatVND(user.balance);
+                document.getElementById('profile-role-text').textContent = user.role;
+                document.getElementById('profile-joined-text').textContent = user.joinedAt;
+
+                document.getElementById('deposit-balance-display').textContent = formatVND(user.balance);
+                document.getElementById('deposit-user-label').textContent = `${user.name} (${user.email})`;
+            } else {
+                document.getElementById('header-avatar-initials').textContent = 'DN';
+                document.getElementById('drawer-account-label').textContent = 'Đăng nhập / Đăng ký';
+                authBtn.className = 'w-full py-3 rounded-full border border-kv-cyan/50 bg-kv-cyan/10 hover:bg-kv-cyan/20 text-kv-cyan text-sm font-semibold flex items-center justify-center gap-2 transition-colors';
+                authBtn.innerHTML = `<i data-lucide="log-in" class="w-4 h-4"></i><span>Đăng nhập tài khoản</span>`;
+            }
+        }
+
+        function renderAll() {
+            updateGlobalBadges();
+            updateVietQRPreview();
+            updateCardNetReceive();
+            renderMarketProducts();
+            renderUserDepositHistory();
+            renderPurchasedKeys();
+            renderNotifications();
+            renderAdminDashboard();
+            lucide.createIcons();
+        }
+
+        function handleHashRouting() {
+            const rawHash = window.location.hash.replace('#/', '').trim();
+            const validViews = ['products', 'home', 'deposit', 'profile', 'auth', 'downloads', 'notifications', 'admin'];
+            const targetView = validViews.includes(rawHash) ? rawHash : 'products';
+            navigateTo(targetView, false);
+        }
+
+        window.addEventListener('hashchange', handleHashRouting);
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.location.hash) {
+                window.location.hash = '#/products';
+            }
+            handleHashRouting();
+        });
+    </script>
+</body>
+</html>
